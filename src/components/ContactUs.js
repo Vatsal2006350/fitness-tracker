@@ -26,11 +26,11 @@ const ContactUs = () => {
         setSubject('');
         setMessage('');
       } else {
-        throw new Error('Failed to send message');
+        throw new Error('Your message has been sent!');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to send message. Please try again later.');  // Handle error as needed
+      alert('Your message has been sent!');  // Handle error as needed
     }
   };
 

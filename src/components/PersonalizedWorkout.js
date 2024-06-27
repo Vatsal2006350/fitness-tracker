@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { TextField, MenuItem, Button, Grid, Box, Typography } from '@mui/material';
+import { generateWorkoutPlan } from './generateWorkoutPlan';
+import WorkoutPlan from './WorkoutPlan';
 
-const goals = ['Weight Loss', 'Muscle Gain', 'Endurance'];
-const levels = ['Beginner', 'Intermediate', 'Advanced'];
+const goals = ['weightLoss', 'muscleGain', 'endurance'];
+const levels = ['beginner', 'intermediate', 'advanced'];
 
 const PersonalizedWorkout = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +12,7 @@ const PersonalizedWorkout = () => {
     height: '',
     age: '',
     gender: '',
-    goal: '',
+    goals: '',
     level: ''
   });
 
@@ -20,32 +22,14 @@ const PersonalizedWorkout = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const generateWorkoutPlan = () => {
-    // Dummy workout plan generation logic
-    const plan = {
-      Monday: [
-        { exercise: 'Push-ups', sets: 3, reps: 10, weights: '', rest: '60 seconds' },
-        { exercise: 'Squats', sets: 3, reps: 10, weights: '', rest: '60 seconds' },
-        { exercise: 'Plank', sets: 3, reps: '30 seconds', weights: '', rest: '60 seconds' },
-      ],
-      Tuesday: [
-        { exercise: 'Lunges', sets: 3, reps: 10, weights: '', rest: '60 seconds' },
-        { exercise: 'Bicep Curls', sets: 3, reps: 10, weights: '10 lbs', rest: '60 seconds' },
-        { exercise: 'Mountain Climbers', sets: 3, reps: 10, weights: '', rest: '60 seconds' },
-      ],
-      // Add more days and exercises as needed
-    };
-
-    setWorkoutPlan(plan);
-  };
-
   const handleSubmit = () => {
-    generateWorkoutPlan();
+    const plan = generateWorkoutPlan(formData);
+    setWorkoutPlan(plan);
   };
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" mb={3}>Personalized Workout Plan</Typography>
+      <Typography variant="h4" mb={3} sx={{ fontWeight: 'bold', fontFamily: 'Arial' }} >Personalized Workout Plan</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -93,13 +77,13 @@ const PersonalizedWorkout = () => {
             fullWidth
             select
             label="Goals"
-            name="goal"
-            value={formData.goal}
+            name="goals"
+            value={formData.goals}
             onChange={handleChange}
           >
             {goals.map((goal) => (
               <MenuItem key={goal} value={goal}>
-                {goal}
+                {goal.charAt(0).toUpperCase() + goal.slice(1)}
               </MenuItem>
             ))}
           </TextField>
@@ -115,7 +99,7 @@ const PersonalizedWorkout = () => {
           >
             {levels.map((level) => (
               <MenuItem key={level} value={level}>
-                {level}
+                {level.charAt(0).toUpperCase() + level.slice(1)}
               </MenuItem>
             ))}
           </TextField>
@@ -127,38 +111,7 @@ const PersonalizedWorkout = () => {
         </Grid>
       </Grid>
 
-      {workoutPlan && (
-        <Box mt={4}>
-          <Typography variant="h5" mb={3}>Your Weekly Exercise Plan</Typography>
-          {Object.keys(workoutPlan).map((day) => (
-            <Box key={day} mb={3}>
-              <Typography variant="h6">{day}</Typography>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Exercise</th>
-                    <th>Sets</th>
-                    <th>Reps</th>
-                    <th>Weights</th>
-                    <th>Rest Between Sets</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {workoutPlan[day].map((exercise, index) => (
-                    <tr key={index}>
-                      <td>{exercise.exercise}</td>
-                      <td>{exercise.sets}</td>
-                      <td>{exercise.reps}</td>
-                      <td>{exercise.weights}</td>
-                      <td>{exercise.rest}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Box>
-          ))}
-        </Box>
-      )}
+      {workoutPlan && <WorkoutPlan plan={workoutPlan} />}
     </Box>
   );
 };
