@@ -13,7 +13,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   };
 
   const handleExercisesClick = () => {
-    if (location.pathname === '/contact') {
+    if (location.pathname !== '/') {
       navigate('/');
       setTimeout(() => {
         scroller.scrollTo('exercises', {
@@ -51,20 +51,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             >
               Home
             </RouterLink>
-            {location.pathname === '/contact' ? (
-              <div
-                onClick={handleExercisesClick}
-                style={{
-                  textDecoration: 'none',
-                  color: darkMode ? '#fff' : '#3A1212',
-                  cursor: 'pointer',
-                  fontFamily: 'Josefin Sans',
-                  fontWeight: 'bold',
-                }}
-              >
-                Exercises
-              </div>
-            ) : (
+            {location.pathname === '/' ? (
               <ScrollLink
                 to="exercises"
                 smooth={true}
@@ -80,6 +67,19 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               >
                 Exercises
               </ScrollLink>
+            ) : (
+              <div
+                onClick={handleExercisesClick}
+                style={{
+                  textDecoration: 'none',
+                  color: darkMode ? '#fff' : '#3A1212',
+                  cursor: 'pointer',
+                  fontFamily: 'Josefin Sans',
+                  fontWeight: 'bold',
+                }}
+              >
+                Exercises
+              </div>
             )}
             <RouterLink
               to="/contact"
