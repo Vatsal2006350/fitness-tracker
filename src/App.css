@@ -1,3 +1,4 @@
+
 body {
     font-family: 'Josefin Sans';
     background-color: #FFFAFB;
@@ -97,7 +98,10 @@ footer {
     display: flex;
     flex-wrap: wrap;
   }
-  
+  .redButton {
+    background-color: red !important; /* Important to override Material-UI styles */
+    color: white !important; /* Text color */
+  }
   .detail-image {
     width: 729px;
     height: 742px;

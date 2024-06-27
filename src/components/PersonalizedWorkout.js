@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { TextField, MenuItem, Button, Grid, Box, Typography } from '@mui/material';
 import { generateWorkoutPlan } from './generateWorkoutPlan';
 import WorkoutPlan from './WorkoutPlan';
+import '../App.css';
+
+
 
 const goals = ['weightLoss', 'muscleGain', 'endurance'];
 const levels = ['beginner', 'intermediate', 'advanced'];
@@ -29,7 +32,14 @@ const PersonalizedWorkout = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" mb={3} sx={{ fontWeight: 'bold', fontFamily: 'Arial' }} >Personalized Workout Plan</Typography>
+      <Typography 
+      variant="h3" 
+      className="title contact-title"
+      align="center"
+      gutterBottom
+      fontWeight="bold"
+      style={{ fontFamily: 'Arial' , color: 'black'}}
+      mb={3}  >PERSONALIZED WORKOUT PLANNER</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -105,7 +115,7 @@ const PersonalizedWorkout = () => {
           </TextField>
         </Grid>
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button variant="contained" className="redButton" color="secondary" onClick={handleSubmit}>
             Generate Workout Plan
           </Button>
         </Grid>

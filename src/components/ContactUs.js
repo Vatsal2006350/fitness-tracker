@@ -1,163 +1,146 @@
-import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Stack, Paper } from '@mui/material';
+import React, { useState, useRef } from 'react';
+import { Box, Typography, TextField, Button, Stack, Paper, Container, Grid } from '@mui/material';
+import emailjs from 'emailjs-com'; 
+import '../assets/css/ContactUs.css';
+import '../App.css'
 
 const ContactUs = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const formInitialDetails = {
+    from_name: '',
+    from_email: '',
+    subject: '',
+    message: ''
+  };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const [formDetails, setFormDetails] = useState(formInitialDetails);
+  const [buttonText, setButtonText] = useState('Send');
+  const [status, setStatus] = useState({});
+
+  const form = useRef();
+
+  const onFormUpdate = (key, value) => {
+    setFormDetails({
+      ...formDetails,
+      [key]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setButtonText('Sending...');
 
     try {
-      const response = await fetch('https://us-central1-your-project-id.cloudfunctions.net/sendEmail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, message }),
-      });
+      const result = await emailjs.sendForm(
+        process.env.REACT_APP_SERVICE_ID,
+        process.env.REACT_APP_TEMPLATE_ID,
+        form.current,
+        process.env.REACT_APP_PUBLIC_KEY
+      );
 
-      if (response.ok) {
-        alert('Your message has been sent!');  // Handle success as needed
-        setName('');
-        setEmail('');
-        setSubject('');
-        setMessage('');
-      } else {
-        throw new Error('Your message has been sent!');
-      }
+      console.log(result.text);
+      setStatus({
+        success: true,
+        message: 'Message sent successfully!'
+      });
+      setButtonText('Send');
+      setFormDetails(formInitialDetails);
     } catch (error) {
-      console.error('Error:', error);
-      alert('Your message has been sent!');  // Handle error as needed
+      console.error("EmailJS error:", error);
+      setStatus({
+        success: false,
+        message: `Failed to send message: ${error.text}`
+      });
+      setButtonText('Send');
     }
   };
 
   return (
-    <Box sx={{ mt: '50px', p: '20px' }}>
-      <Typography 
-        variant="h3" 
-        mb="20px" 
-        textAlign="center"
-        sx={{ fontWeight: 'bold', fontFamily: 'Arial' }}  // Customize font and weight here
-      >
-        Contact Us
-      </Typography>
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} sx={{ alignItems: 'flex-start' }}>
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: 3, 
-            border: '2px solid red', 
-            flexGrow: 1, 
-            maxWidth: '600px',
-            mx: 'auto',
-            mt: { xs: '0', md: '20px' }
-          }}
-        >
-          <form onSubmit={handleSubmit}>
-            <Stack spacing={3}>
-              <TextField
-                label="Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'red',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'red',
-                  },
-                }}
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'red',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'red',
-                  },
-                }}
-              />
-              <TextField
-                label="Subject"
-                variant="outlined"
-                fullWidth
-                required
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'red',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'red',
-                  },
-                }}
-              />
-              <TextField
-                label="Message"
-                variant="outlined"
-                multiline
-                rows={4}
-                fullWidth
-                required
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'red',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'red',
-                  },
-                }}
-              />
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
-              >
-                Send
-              </Button>
-            </Stack>
-          </form>
-        </Paper>
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: 3, 
-            border: '2px solid red', 
-            maxWidth: '300px',
-            mt: { xs: '20px', md: '0' },
-            textAlign: 'center'
-          }}
-        >
-          <Typography 
-            variant="h6" 
-            sx={{ fontWeight: 'bold', fontFamily: 'Arial', mb: 2 }}
-          >
-            Contact Details
-          </Typography>
-          <Typography variant="body1">
-            <strong>Phone:</strong> +971 50 806 2831
-          </Typography>
-          <Typography variant="body1">
-            <strong>Email:</strong> svatsal64@gmail.com
-          </Typography>
-        </Paper>
-      </Stack>
+    <Box className="outerWrapper">
+      <Container className="wrapper">
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <Paper className="contacts" elevation={3}>
+              <Typography variant="h3" align="center" gutterBottom fontWeight="bold" style={{ fontFamily: 'Arial', color: 'white' }}>
+                LET'S CONNECT
+              </Typography>
+              <Typography variant="body1" className="description" align="center">
+              Feel free to connect with me for collaborations focused on promoting health awareness, providing personalized tips, and sharing my experiences. I'm always open to engage with you on these topics! 
+              </Typography>
+              <Box className="info">
+                <br></br>
+                <Typography fontWeight='bold' variant="body1" align="center">Email: svatsal@umich.edu</Typography>
+                <Typography fontWeight='bold' variant="body1" align="center">Phone: (+971) 50-806-2831</Typography>
+              </Box>
+              
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper className="form" elevation={3}>
+              <Typography variant="h3" align="center" fontWeight={700} gutterBottom sx={{  fontWeight: 'bold', fontFamily: 'Arial' , color: 'black'}} >
+                CONTACT US
+              </Typography>
+              <form ref={form} onSubmit={handleSubmit}>
+                <Stack spacing={3}>
+                  <TextField
+                    label="Name"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    name="from_name"
+                    value={formDetails.from_name}
+                    onChange={(e) => onFormUpdate('from_name', e.target.value)}
+                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                  />
+                  <TextField
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    name="from_email"
+                    value={formDetails.from_email}
+                    onChange={(e) => onFormUpdate('from_email', e.target.value)}
+                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                  />
+                  <TextField
+                    label="Subject"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    name="subject"
+                    value={formDetails.subject}
+                    onChange={(e) => onFormUpdate('subject', e.target.value)}
+                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                  />
+                  <TextField
+                    label="Message"
+                    variant="outlined"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    required
+                    name="message"
+                    value={formDetails.message}
+                    onChange={(e) => onFormUpdate('message', e.target.value)}
+                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                  />
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    className="control"
+                  >
+                    <span>{buttonText}</span>
+                  </Button>
+                </Stack>
+              </form>
+              {status.message && 
+                <Typography className={status.success ? 'success' : 'danger'}>
+                  {status.message}
+                </Typography>
+              }
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
     </Box>
   );
 };
