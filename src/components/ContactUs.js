@@ -60,7 +60,7 @@ const ContactUs = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Paper className="contacts" elevation={3}>
-              <Typography variant="h3" align="center" gutterBottom fontWeight="bold" style={{ fontFamily: 'Arial', color: 'white' }}>
+              <Typography variant="h3" align="center" gutterBottom fontWeight="bold" style={{ fontFamily: 'Arial', color: 'black' }}>
                 LET'S CONNECT
               </Typography>
               <Typography variant="body1" className="description" align="center">
