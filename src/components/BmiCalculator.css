@@ -1,0 +1,76 @@
+.bmi-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-top: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #000000;
+    gap: 20px; /* Add some space between the two columns */
+}
+
+.bmi-info {
+    flex: 1; /* Allow the info section to take up available space */
+    padding: 20px;
+}
+
+.bmi-info img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.bmi-info p {
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+
+.bmi-calculator {
+    flex: 1; /* Allow the calculator section to take up available space */
+    text-align: center;
+}
+
+.bmi-calculator h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.input-container {
+    margin: 10px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
+
+input {
+    width: 80%; /* Make the input fields wider */
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.calculate-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #FF2625;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.calculate-btn:hover {
+    background-color: #cc0000;
+}
+
+.result {
+    margin-top: 20px;
+}
+
+.bmi-value,
+.bmi-message {
+    font-weight: bold;
+    color: #FF2625;
+}
