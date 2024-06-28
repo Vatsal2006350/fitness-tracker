@@ -31,10 +31,10 @@ const ContactUs = () => {
 
     try {
       const result = await emailjs.sendForm(
-        process.env.REACT_APP_SERVICE_ID,
-        process.env.REACT_APP_TEMPLATE_ID,
+        'service_rbtsw68',
+        'template_v158ado',
         form.current,
-        process.env.REACT_APP_PUBLIC_KEY
+        'hTBYd6aOdPZpStIVU'
       );
 
       console.log(result.text);
@@ -71,7 +71,6 @@ const ContactUs = () => {
                 <Typography fontWeight='bold' variant="body1" align="center">Email: svatsal@umich.edu</Typography>
                 <Typography fontWeight='bold' variant="body1" align="center">Phone: (+971) 50-806-2831</Typography>
               </Box>
-              
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
