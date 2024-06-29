@@ -4,7 +4,7 @@ import emailjs from 'emailjs-com';
 import '../assets/css/ContactUs.css';
 import '../App.css'
 
-const ContactUs = () => {
+const ContactUs = ({ darkMode }) => {
   const formInitialDetails = {
     from_name: '',
     from_email: '',
@@ -60,22 +60,49 @@ const ContactUs = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Paper className="contacts" elevation={3}>
-              <Typography variant="h3" align="center" gutterBottom fontWeight="bold" style={{ fontFamily: 'Arial', color: 'black' }}>
+              <Typography 
+                sx={{ 
+                  fontSize: { lg: '44px', xs: '40px' }, 
+                  fontWeight: 'bold', 
+                  fontFamily: 'Arial', 
+                  color: darkMode ? 'white' : 'black' 
+                }} 
+                align="center"
+              >
                 LET'S CONNECT
               </Typography>
-              <Typography variant="body1" className="description" align="center">
-              Feel free to connect with me for collaborations focused on promoting health awareness, providing personalized tips, and sharing my experiences. I'm always open to engage with you on these topics! 
+              <Typography 
+                variant="body1" 
+                className="description" 
+                align="center"
+                sx={{ color: darkMode ? 'white' : 'black' }}
+              >
+                Feel free to connect with me for collaborations focused on promoting health awareness, providing personalized tips, and sharing my experiences. I'm always open to engage with you on these topics! 
               </Typography>
               <Box className="info">
                 <br></br>
-                <Typography fontWeight='bold' variant="body1" align="center">Email: svatsal@umich.edu</Typography>
-                <Typography fontWeight='bold' variant="body1" align="center">Phone: (+971) 50-806-2831</Typography>
+                <Typography fontWeight='bold' variant="body1" align="center" sx={{ color: darkMode ? 'white' : 'black' }}>
+                  Email: svatsal@umich.edu
+                </Typography>
+                <Typography fontWeight='bold' variant="body1" align="center" sx={{ color: darkMode ? 'white' : 'black' }}>
+                  Phone: (+971) 50-806-2831
+                </Typography>
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} >
             <Paper className="form" elevation={3}>
-              <Typography variant="h3" align="center" fontWeight={700} gutterBottom sx={{  fontWeight: 'bold', fontFamily: 'Arial' , color: 'black'}} >
+              <Typography 
+                variant="h3" 
+                align="center" 
+                fontWeight={700} 
+                gutterBottom 
+                sx={{ 
+                  fontWeight: 'bold', 
+                  fontFamily: 'Arial', 
+                  color: darkMode ? 'white' : 'black'
+                }}
+              >
                 CONTACT US
               </Typography>
               <form ref={form} onSubmit={handleSubmit}>
@@ -88,7 +115,7 @@ const ContactUs = () => {
                     name="from_name"
                     value={formDetails.from_name}
                     onChange={(e) => onFormUpdate('from_name', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
                   />
                   <TextField
                     label="Email"
@@ -98,7 +125,7 @@ const ContactUs = () => {
                     name="from_email"
                     value={formDetails.from_email}
                     onChange={(e) => onFormUpdate('from_email', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
                   />
                   <TextField
                     label="Subject"
@@ -108,7 +135,7 @@ const ContactUs = () => {
                     name="subject"
                     value={formDetails.subject}
                     onChange={(e) => onFormUpdate('subject', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
                   />
                   <TextField
                     label="Message"
@@ -120,7 +147,7 @@ const ContactUs = () => {
                     name="message"
                     value={formDetails.message}
                     onChange={(e) => onFormUpdate('message', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial' } }}
+                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
                   />
                   <Button
                     variant="contained"

@@ -9,6 +9,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ContactUs from './components/ContactUs';
 import PersonalizedWorkout from './components/PersonalizedWorkout';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -27,8 +29,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/personalized-workout" element={<PersonalizedWorkout />} />
+          <Route path="/contact" element={<ContactUs darkMode={darkMode} />} />
+          <Route path="/personalized-workout" element={<PersonalizedWorkout darkMode={darkMode} />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
       </Box>
