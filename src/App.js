@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Box, CssBaseline, createTheme, ThemeProvider } from '@mui/material';
+import { Analytics } from '@vercel/analytics/react';
 
 import './App.css';
 import ExerciseDetail from './pages/ExerciseDetail';
@@ -36,6 +37,7 @@ const App = () => {
         </Routes>
         <Footer />
       </Box>
+      <Analytics />
     </ThemeProvider>
   );
 };
