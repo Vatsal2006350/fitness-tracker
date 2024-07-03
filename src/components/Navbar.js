@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import {Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button } from '@mui/material';
+import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
@@ -89,6 +89,19 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     { text: 'Login', onClick: () => setShowLoginForm(true) },
   ];
 
+  const menuItemStyle = (isDrawer, path, text) => ({
+    textDecoration: 'none',
+    color: isDrawer ? '#000' : '#fff', // Black in drawer, white in navbar
+    cursor: 'pointer',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Updated font stack
+    fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal', // Bold if active and not Exercises, normal otherwise
+    fontSize: '18px',
+    borderBottom: isActive(path) && !isDrawer && text !== 'Exercises' ? '3px solid #3A1212' : 'none',
+    margin: '0 10px',
+    whiteSpace: 'nowrap',
+    textAlign: 'center',
+  });
+
   const renderMenuItems = (isDrawer) =>
     menuItems.map((item) => (
       <ListItem
@@ -100,53 +113,21 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         {item.text === 'Exercises' && !isDrawer ? (
           <div
             onClick={handleExercisesClick}
-            style={{
-              textDecoration: 'none',
-              color: '#fff',
-              cursor: 'pointer',
-              fontFamily: 'Josefin Sans',
-              fontWeight: 'bold',
-              fontSize: '18px',
-              borderBottom: isActive(item.link) && location.hash === '#exercises' ? '3px solid #3A1212' : 'none',
-              margin: '0 10px',
-              whiteSpace: 'nowrap',
-              textAlign: 'center',
-            }}
+            style={menuItemStyle(isDrawer, item.link, item.text)}
           >
             {item.text}
           </div>
         ) : item.text === 'Login' ? (
           <div
             onClick={item.onClick}
-            style={{
-              textDecoration: 'none',
-              color: '#fff',
-              cursor: 'pointer',
-              fontFamily: 'Josefin Sans',
-              fontWeight: 'bold',
-              fontSize: '18px',
-              margin: '0 10px',
-              whiteSpace: 'nowrap',
-              textAlign: 'center',
-            }}
+            style={menuItemStyle(isDrawer, item.link, item.text)}
           >
             {item.text}
           </div>
         ) : (
           <RouterLink
             to={item.link}
-            style={{
-              textDecoration: 'none',
-              color: '#fff',
-              borderBottom: isActive(item.link) ? '3px solid #3A1212' : 'none',
-              fontFamily: 'Josefin Sans',
-              fontWeight: 'bold',
-              fontSize: '18px',
-              display: 'inline-block',
-              margin: '0 10px',
-              whiteSpace: 'nowrap',
-              textAlign: 'center',
-            }}
+            style={menuItemStyle(isDrawer, item.link, item.text)}
             onClick={item.onClick}
           >
             {item.text}
