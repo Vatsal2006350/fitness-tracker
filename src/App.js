@@ -32,8 +32,8 @@ const App = () => {
           <Route path="/exercise/:id" element={<ExerciseDetail />} />
           <Route path="/contact" element={<ContactUs darkMode={darkMode} />} />
           <Route path="/personalized-workout" element={<PersonalizedWorkout darkMode={darkMode} />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
+          {/* <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} /> */}
         </Routes>
         <Footer />
       </Box>

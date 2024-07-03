@@ -6,9 +6,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
 import { useTheme } from '@mui/material/styles';
 import Logo from '../assets/images/Logo.png';
-import Login from './Login';
-import SignUp from './SignUp';
+// import Login from './Login';
+// import SignUp from './SignUp';
 
+/*
 const LoginSignupModal = ({ open, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -41,12 +42,13 @@ const LoginSignupModal = ({ open, onClose }) => {
     </Modal>
   );
 };
+*/
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
+  // const [showLoginForm, setShowLoginForm] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -86,7 +88,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     { text: 'Exercises', link: '/', onClick: handleExercisesClick },
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
-    { text: 'Login', onClick: () => setShowLoginForm(true) },
+    // { text: 'Login', onClick: () => setShowLoginForm(true) },
   ];
 
   const menuItemStyle = (isDrawer, path, text) => ({
@@ -113,13 +115,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         {item.text === 'Exercises' && !isDrawer ? (
           <div
             onClick={handleExercisesClick}
-            style={menuItemStyle(isDrawer, item.link, item.text)}
-          >
-            {item.text}
-          </div>
-        ) : item.text === 'Login' ? (
-          <div
-            onClick={item.onClick}
             style={menuItemStyle(isDrawer, item.link, item.text)}
           >
             {item.text}
@@ -209,10 +204,12 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           </Drawer>
         </Toolbar>
       </AppBar>
+      {/*
       <LoginSignupModal 
         open={showLoginForm} 
         onClose={() => setShowLoginForm(false)} 
       />
+      */}
     </>
   );
 };
