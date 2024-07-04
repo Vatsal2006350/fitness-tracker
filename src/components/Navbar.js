@@ -6,49 +6,48 @@ import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
 import { useTheme } from '@mui/material/styles';
 import Logo from '../assets/images/Logo.png';
-// import Login from './Login';
-// import SignUp from './SignUp';
+import Login from './Login';
+import SignUp from './SignUp';
+import ChatPage from './ChatPage';
 
-/*
-const LoginSignupModal = ({ open, onClose }) => {
-  const [isLogin, setIsLogin] = useState(true);
+// const LoginSignupModal = ({ open, onClose }) => {
+//   const [isLogin, setIsLogin] = useState(true);
 
-  return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        boxShadow: 24,
-        p: 4,
-        borderRadius: 2,
-      }}>
-        {isLogin ? <Login /> : <SignUp />}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-          <Link component="button" variant="body2" onClick={() => {}}>
-            Forgot password?
-          </Link>
-          <Link component="button" variant="body2" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
-          </Link>
-        </Box>
-        <Button fullWidth variant="contained" onClick={onClose} sx={{ mt: 2 }}>
-          Close
-        </Button>
-      </Box>
-    </Modal>
-  );
-};
-*/
+//   return (
+//     <Modal open={open} onClose={onClose}>
+//       <Box sx={{
+//         position: 'absolute',
+//         top: '50%',
+//         left: '50%',
+//         transform: 'translate(-50%, -50%)',
+//         width: 400,
+//         bgcolor: 'background.paper',
+//         boxShadow: 24,
+//         p: 4,
+//         borderRadius: 2,
+//       }}>
+//         {isLogin ? <Login /> : <SignUp />}
+//         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+//           <Link component="button" variant="body2" onClick={() => {}}>
+//             Forgot password?
+//           </Link>
+//           <Link component="button" variant="body2" onClick={() => setIsLogin(!isLogin)}>
+//             {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
+//           </Link>
+//         </Box>
+//         <Button fullWidth variant="contained" onClick={onClose} sx={{ mt: 2 }}>
+//           Close
+//         </Button>
+//       </Box>
+//     </Modal>
+//   );
+// };
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  // const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -57,22 +56,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   };
 
   const handleExercisesClick = () => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        scroller.scrollTo('exercises', {
-          smooth: true,
-          duration: 500,
-          offset: -70,
-        });
-      }, 100);
-    } else {
-      scroller.scrollTo('exercises', {
-        smooth: true,
-        duration: 500,
-        offset: -70,
-      });
-    }
+    scroller.scrollTo('exercises', {
+      smooth: true,
+      duration: 500,
+      offset: -70,
+    });
   };
 
   const toggleDrawer = () => {
@@ -85,9 +73,10 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
   const menuItems = [
     { text: 'Home', link: '/' },
-    { text: 'Exercises', link: '/', onClick: handleExercisesClick },
+    { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick }, // Updated link to anchor on home page
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
+    // { text: 'Chat', link: '/chat' }, // Corrected chat page link
     // { text: 'Login', onClick: () => setShowLoginForm(true) },
   ];
 
@@ -97,11 +86,18 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     cursor: 'pointer',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Updated font stack
     fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal', // Bold if active and not Exercises, normal otherwise
-    fontSize: '18px',
-    borderBottom: isActive(path) && !isDrawer && text !== 'Exercises' ? '3px solid #3A1212' : 'none',
+    fontSize: '16px', // Reduced font size for a more compact look
+    backgroundColor: isActive(path) && !isDrawer ? '#3A1212' : 'transparent', // Background color for active button
+    color: isActive(path) && !isDrawer ? '#fff' : '#fff', // Text color for active button
+    borderRadius: '5px',
+    padding: '8px 16px', // Adjusted padding for a more compact button
     margin: '0 10px',
     whiteSpace: 'nowrap',
     textAlign: 'center',
+    transition: 'background-color 0.3s ease-in-out',
+    '&:hover': {
+      backgroundColor: !isActive(path) && !isDrawer ? '#3A1212' : 'rgba(0, 0, 0, 0.1)',
+    },
   });
 
   const renderMenuItems = (isDrawer) =>
@@ -153,7 +149,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               {renderMenuItems(false)}
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', mt: 1 }}> {/* Added mt: 1 for slight margin-top */}
             <FormControlLabel
               control={
                 <Switch
@@ -193,23 +189,24 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                       onChange={handleModeChange}
                       name="darkModeToggle"
                       color="default"
+                      sx={{ ml: 1 }} // Added margin-left for alignment
                     />
                   }
                   label="Dark Mode"
                   labelPlacement="start"
-                  sx={{ color: '#fff' }}
+                  sx={{ color: '#fff', mt: 1 }} // Added mt: 1 for slight margin-top
                 />
               </ListItem>
             </List>
           </Drawer>
         </Toolbar>
       </AppBar>
-      {/*
-      <LoginSignupModal 
-        open={showLoginForm} 
-        onClose={() => setShowLoginForm(false)} 
-      />
-      */}
+      {/* {
+        <LoginSignupModal 
+          open={showLoginForm} 
+          onClose={() => setShowLoginForm(false)} 
+        />
+      } */}
     </>
   );
 };
