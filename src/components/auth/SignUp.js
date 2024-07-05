@@ -1,17 +1,21 @@
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container } from '@mui/material';
+import { Avatar, Button, CssBaseline, TextField, Grid, Box, Typography, Container } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../Firebase';
 
 const theme = createTheme();
 
-const SignUp = () => {
+const SignUp = ({ onClose }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -19,7 +23,23 @@ const SignUp = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle sign-up logic
+    const { firstName, lastName, email, password } = formData;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        updateProfile(userCredential.user, {
+          displayName: `${firstName} ${lastName}`,
+        }).then(() => {
+          console.log('User profile updated:', userCredential.user);
+          onClose(); // Close the signup modal
+          navigate('/'); // Redirect to home page after successful sign-up
+        }).catch((error) => {
+          console.error('Error updating profile:', error);
+        });
+      })
+      .catch((error) => {
+        console.error('Error signing up:', error);
+        alert(error.message);
+      });
   };
 
   return (
@@ -101,7 +121,6 @@ const SignUp = () => {
             >
               Sign Up
             </Button>
-           
           </Box>
         </Box>
       </Container>

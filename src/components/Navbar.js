@@ -1,55 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
 import { useTheme } from '@mui/material/styles';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Logo from '../assets/images/Logo.png';
-import Login from './Login';
-import SignUp from './SignUp';
-import ChatPage from './ChatPage';
+import Login from './auth/Login';
+import SignUp from './auth/SignUp';
+import { auth } from '../Firebase';
 
-// const LoginSignupModal = ({ open, onClose }) => {
-//   const [isLogin, setIsLogin] = useState(true);
+const LoginSignupModal = ({ open, onClose, setUser }) => {
+  const [isLogin, setIsLogin] = useState(true);
 
-//   return (
-//     <Modal open={open} onClose={onClose}>
-//       <Box sx={{
-//         position: 'absolute',
-//         top: '50%',
-//         left: '50%',
-//         transform: 'translate(-50%, -50%)',
-//         width: 400,
-//         bgcolor: 'background.paper',
-//         boxShadow: 24,
-//         p: 4,
-//         borderRadius: 2,
-//       }}>
-//         {isLogin ? <Login /> : <SignUp />}
-//         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-//           <Link component="button" variant="body2" onClick={() => {}}>
-//             Forgot password?
-//           </Link>
-//           <Link component="button" variant="body2" onClick={() => setIsLogin(!isLogin)}>
-//             {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
-//           </Link>
-//         </Box>
-//         <Button fullWidth variant="contained" onClick={onClose} sx={{ mt: 2 }}>
-//           Close
-//         </Button>
-//       </Box>
-//     </Modal>
-//   );
-// };
+  useEffect(() => {
+    if (open) {
+      setIsLogin(true); // Reset to login form when modal opens
+    }
+  }, [open]);
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        p: 4,
+        borderRadius: 2,
+      }}>
+        {isLogin ? <Login setUser={setUser} onClose={onClose} /> : <SignUp onClose={onClose} />}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+          <Link component="button" variant="body2" onClick={() => {}}>
+            Forgot password?
+          </Link>
+          <Link component="button" variant="body2" onClick={() => setIsLogin(!isLogin)}>
+            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
+          </Link>
+        </Box>
+        <Button fullWidth variant="contained" onClick={onClose} sx={{ mt: 2 }}>
+          Close
+        </Button>
+      </Box>
+    </Modal>
+  );
+};
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [user, setUser] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      setUser(null);
+      navigate('/');
+    }).catch((error) => {
+      console.error('Error logging out:', error);
+    });
+  };
 
   const handleModeChange = () => {
     setDarkMode(!darkMode);
@@ -76,9 +105,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick }, // Updated link to anchor on home page
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
-    // { text: 'Chat', link: '/chat' }, // Corrected chat page link
-    // { text: 'Login', onClick: () => setShowLoginForm(true) },
-  ];
+    user ? { text: `Welcome, ${user.displayName || user.email}`, onClick: null } : { text: 'Login', onClick: () => setShowLoginForm(true) },
+    user ? { text: 'Logout', onClick: handleLogout } : null,
+  ].filter(Boolean); // Filter out null items
 
   const menuItemStyle = (isDrawer, path, text) => ({
     textDecoration: 'none',
@@ -201,12 +230,13 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           </Drawer>
         </Toolbar>
       </AppBar>
-      {/* {
+      {showLoginForm &&
         <LoginSignupModal 
           open={showLoginForm} 
           onClose={() => setShowLoginForm(false)} 
+          setUser={setUser} 
         />
-      } */}
+      }
     </>
   );
 };
