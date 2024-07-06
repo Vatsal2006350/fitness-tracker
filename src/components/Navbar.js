@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button, Typography } from '@mui/material';
+import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
@@ -20,13 +20,13 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [scrollCount, setScrollCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [showSignUpForm, setShowSignUpForm] = useState(false); // Track whether to show sign-up form
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        setShowModal(false); // Close modal on successful login
+        setShowModal(false);
       } else {
         setUser(null);
       }
@@ -35,9 +35,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     const handleScroll = () => {
       setScrollCount((prevCount) => {
         const newCount = prevCount + 1;
-        if (newCount === 10) { // Adjusted scroll trigger count
-          setShowSignUpForm(true); // Show sign-up form after scrolling
-          setShowModal(true); // Open modal after scrolling
+        if (newCount === 10 && !user) {
+          setShowSignUpForm(true);
+          setShowModal(true);
         }
         return newCount;
       });
@@ -49,7 +49,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
       unsubscribe();
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [user]);
 
   const handleLogout = () => {
     signOut(auth).then(() => {
@@ -65,11 +65,16 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   };
 
   const handleExercisesClick = () => {
-    scroller.scrollTo('exercises', {
-      smooth: true,
-      duration: 500,
-      offset: -70,
-    });
+    if (user) {
+      scroller.scrollTo('exercises', {
+        smooth: true,
+        duration: 500,
+        offset: -70,
+      });
+    } else {
+      setShowSignUpForm(true);
+      setShowModal(true);
+    }
   };
 
   const toggleDrawer = () => {
@@ -92,24 +97,24 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
   const menuItems = [
     { text: 'Home', link: '/' },
-    { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick }, // Updated link to anchor on home page
+    { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick },
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
     user ? { text: `Welcome, ${user.displayName || user.email}`, onClick: null } : { text: 'Login', onClick: handleLoginClick },
     user ? { text: 'Logout', onClick: handleLogout } : null,
-  ].filter(Boolean); // Filter out null items
+  ].filter(Boolean);
 
   const menuItemStyle = (isDrawer, path, text) => ({
     textDecoration: 'none',
-    color: isDrawer ? '#000' : '#fff', // Black in drawer, white in navbar
+    color: isDrawer ? '#000' : '#fff',
     cursor: 'pointer',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Updated font stack
-    fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal', // Bold if active and not Exercises, normal otherwise
-    fontSize: '16px', // Reduced font size for a more compact look
-    backgroundColor: isActive(path) && !isDrawer ? '#3A1212' : 'transparent', // Background color for active button
-    color: isActive(path) && !isDrawer ? '#fff' : '#fff', // Text color for active button
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal',
+    fontSize: '16px',
+    backgroundColor: isActive(path) && !isDrawer ? '#3A1212' : 'transparent',
+    color: isActive(path) && !isDrawer ? '#fff' : '#fff',
     borderRadius: '5px',
-    padding: '8px 16px', // Adjusted padding for a more compact button
+    padding: '8px 16px',
     margin: '0 10px',
     whiteSpace: 'nowrap',
     textAlign: 'center',
@@ -124,21 +129,21 @@ const Navbar = ({ darkMode, setDarkMode }) => {
       <ListItem
         button={isDrawer}
         key={item.text}
-        onClick={isDrawer ? item.onClick || toggleDrawer : item.onClick}
+        onClick={isDrawer ? (user ? item.onClick : null) : (user ? item.onClick : handleSignUpClick)}
         sx={{ padding: isDrawer ? '8px 16px' : 'unset' }}
       >
         {item.text === 'Exercises' && !isDrawer ? (
           <div
-            onClick={handleExercisesClick}
+            onClick={user ? handleExercisesClick : handleSignUpClick}
             style={menuItemStyle(isDrawer, item.link, item.text)}
           >
             {item.text}
           </div>
         ) : (
           <RouterLink
-            to={item.link}
+            to={user ? item.link : '#'}
             style={menuItemStyle(isDrawer, item.link, item.text)}
-            onClick={item.onClick}
+            onClick={user ? item.onClick : handleSignUpClick}
           >
             {item.text}
           </RouterLink>
@@ -168,7 +173,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               {renderMenuItems(false)}
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', mt: 1 }}> {/* Added mt: 1 for slight margin-top */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', mt: 1 }}>
             <FormControlLabel
               control={
                 <Switch
@@ -180,7 +185,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               }
               label="Dark Mode"
               labelPlacement="start"
-              sx={{ color: '#fff', fontSize: '12px' }} // Reduced font size
+              sx={{ color: '#fff', fontSize: '12px' }}
             />
           </Box>
           <IconButton
@@ -227,48 +232,39 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                 }
                 label="Dark Mode"
                 labelPlacement="start"
-                sx={{ color: '#000', fontSize: '12px' }} // Reduced font size
+                sx={{ color: '#000', fontSize: '12px' }}
               />
             </ListItem>
           </List>
         </Box>
       </Drawer>
 
-      <Modal open={showModal} onClose={() => setShowModal(false)}>
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
-        }}>
+      {showModal && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1300,
+            bgcolor: 'background.paper',
+          }}
+        >
           {showSignUpForm ? (
-            <>
-              <SignUp onClose={() => setShowModal(false)} />
-              <Typography variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Already a member?{' '}
-                <Link component="button" variant="body2" onClick={() => setShowSignUpForm(false)} sx={{ color: 'blue', textDecoration: 'underline' }}>
-                  Login instead
-                </Link>
-              </Typography>
-            </>
+            <SignUp
+              onClose={() => user && setShowModal(false)}
+              onSwitchToLogin={() => setShowSignUpForm(false)}
+            />
           ) : (
-            <>
-              <Login onClose={() => setShowModal(false)} />
-              <Typography variant="body2" align="center" sx={{ marginTop: '16px' }}>
-                Not a member?{' '}
-                <Link component="button" variant="body2" onClick={() => setShowSignUpForm(true)} sx={{ color: 'blue', textDecoration: 'underline' }}>
-                  Sign up instead
-                </Link>
-              </Typography>
-            </>
+            <Login
+              setUser={setUser}
+              onClose={() => user && setShowModal(false)}
+              onSwitchToSignUp={() => setShowSignUpForm(true)}
+            />
           )}
         </Box>
-      </Modal>
+      )}
     </>
   );
 };
