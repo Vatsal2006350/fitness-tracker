@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button } from '@mui/material';
+import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Modal, Button, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
@@ -11,64 +11,44 @@ import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import { auth } from '../Firebase';
 
-const LoginSignupModal = ({ open, onClose, setUser }) => {
-  const [isLogin, setIsLogin] = useState(true);
-
-  useEffect(() => {
-    if (open) {
-      setIsLogin(true); // Reset to login form when modal opens
-    }
-  }, [open]);
-
-  return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        boxShadow: 24,
-        p: 4,
-        borderRadius: 2,
-      }}>
-        {isLogin ? <Login setUser={setUser} onClose={onClose} /> : <SignUp onClose={onClose} />}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-          <Link component="button" variant="body2" onClick={() => {}}>
-            Forgot password?
-          </Link>
-          <Link component="button" variant="body2" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in"}
-          </Link>
-        </Box>
-        <Button fullWidth variant="contained" onClick={onClose} sx={{ mt: 2 }}>
-          Close
-        </Button>
-      </Box>
-    </Modal>
-  );
-};
-
 const Navbar = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
   const [user, setUser] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [scrollCount, setScrollCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [showSignUpForm, setShowSignUpForm] = useState(false); // Track whether to show sign-up form
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        setShowModal(false); // Close modal on successful login
       } else {
         setUser(null);
       }
     });
 
-    return () => unsubscribe();
+    const handleScroll = () => {
+      setScrollCount((prevCount) => {
+        const newCount = prevCount + 1;
+        if (newCount === 10) { // Adjusted scroll trigger count
+          setShowSignUpForm(true); // Show sign-up form after scrolling
+          setShowModal(true); // Open modal after scrolling
+        }
+        return newCount;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -100,12 +80,22 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     return location.pathname === path;
   };
 
+  const handleLoginClick = () => {
+    setShowSignUpForm(false);
+    setShowModal(true);
+  };
+
+  const handleSignUpClick = () => {
+    setShowSignUpForm(true);
+    setShowModal(true);
+  };
+
   const menuItems = [
     { text: 'Home', link: '/' },
     { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick }, // Updated link to anchor on home page
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
-    user ? { text: `Welcome, ${user.displayName || user.email}`, onClick: null } : { text: 'Login', onClick: () => setShowLoginForm(true) },
+    user ? { text: `Welcome, ${user.displayName || user.email}`, onClick: null } : { text: 'Login', onClick: handleLoginClick },
     user ? { text: 'Logout', onClick: handleLogout } : null,
   ].filter(Boolean); // Filter out null items
 
@@ -190,53 +180,95 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               }
               label="Dark Mode"
               labelPlacement="start"
-              sx={{ color: '#fff' }}
+              sx={{ color: '#fff', fontSize: '12px' }} // Reduced font size
             />
           </Box>
-          {isMobile && (
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ display: { xs: 'block', md: 'none' } }}
-              onClick={toggleDrawer}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-          <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-            <IconButton onClick={toggleDrawer} sx={{ alignSelf: 'flex-end', m: 2 }}>
-              <CloseIcon />
-            </IconButton>
-            <List>
-              {renderMenuItems(true)}
-              <ListItem>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={darkMode}
-                      onChange={handleModeChange}
-                      name="darkModeToggle"
-                      color="default"
-                      sx={{ ml: 1 }} // Added margin-left for alignment
-                    />
-                  }
-                  label="Dark Mode"
-                  labelPlacement="start"
-                  sx={{ color: '#fff', mt: 1 }} // Added mt: 1 for slight margin-top
-                />
-              </ListItem>
-            </List>
-          </Drawer>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="end"
+            onClick={toggleDrawer}
+            sx={{ display: { xs: 'flex', md: 'none' }, justifySelf: 'flex-end' }}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
-      {showLoginForm &&
-        <LoginSignupModal 
-          open={showLoginForm} 
-          onClose={() => setShowLoginForm(false)} 
-          setUser={setUser} 
-        />
-      }
+
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
+        <Box
+          sx={{
+            width: 250,
+            backgroundColor: '#fff',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '16px' }}>
+            <RouterLink to="/" style={{ textDecoration: 'none' }} onClick={toggleDrawer}>
+              <img src={Logo} alt="logo" style={{ width: '50px', height: '50px', margin: '5px' }} />
+            </RouterLink>
+            <IconButton onClick={toggleDrawer}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List>
+            {renderMenuItems(true)}
+            <ListItem>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={darkMode}
+                    onChange={handleModeChange}
+                    name="darkModeToggle"
+                    color="default"
+                  />
+                }
+                label="Dark Mode"
+                labelPlacement="start"
+                sx={{ color: '#000', fontSize: '12px' }} // Reduced font size
+              />
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
+
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          p: 4,
+        }}>
+          {showSignUpForm ? (
+            <>
+              <SignUp onClose={() => setShowModal(false)} />
+              <Typography variant="body2" align="center" sx={{ marginTop: '16px' }}>
+                Already a member?{' '}
+                <Link component="button" variant="body2" onClick={() => setShowSignUpForm(false)} sx={{ color: 'blue', textDecoration: 'underline' }}>
+                  Login instead
+                </Link>
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Login onClose={() => setShowModal(false)} />
+              <Typography variant="body2" align="center" sx={{ marginTop: '16px' }}>
+                Not a member?{' '}
+                <Link component="button" variant="body2" onClick={() => setShowSignUpForm(true)} sx={{ color: 'blue', textDecoration: 'underline' }}>
+                  Sign up instead
+                </Link>
+              </Typography>
+            </>
+          )}
+        </Box>
+      </Modal>
     </>
   );
 };

@@ -60,6 +60,9 @@ const SignUp = ({ onClose }) => {
           <Typography component="h1" variant="h5">
             Sign Up
           </Typography>
+          <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 2 }}>
+            Sign up to continue accessing all features of the app.
+          </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
