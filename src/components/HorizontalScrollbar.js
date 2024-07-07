@@ -1,46 +1,74 @@
-import React, { useContext } from 'react';
-import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
-import { Box, Typography } from '@mui/material';
+import React, { useRef } from 'react';
+import { Box, IconButton } from '@mui/material';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
 import ExerciseCard from './ExerciseCard';
 import BodyPart from './BodyPart';
-import RightArrowIcon from '../assets/icons/left-arrow.png';
-import LeftArrowIcon from '../assets/icons/right-arrow.png';
 
-const LeftArrow = () => {
-  const { scrollPrev } = useContext(VisibilityContext);
+const HorizontalScrollbar = ({ data, setBodyPart, bodyPart, isBodyParts }) => {
+  const scrollContainer = useRef(null);
 
-  return (
-    <Typography onClick={() => scrollPrev()} className="right-arrow">
-      <img src={LeftArrowIcon} alt="right-arrow" />
-    </Typography>
-  );
-};
-
-const RightArrow = () => {
-  const { scrollNext } = useContext(VisibilityContext);
+  const scroll = (direction) => {
+    if (scrollContainer.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      scrollContainer.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <Typography onClick={() => scrollNext()} className="left-arrow">
-      <img src={RightArrowIcon} alt="right-arrow" />
-    </Typography>
-  );
-};
-
-const HorizontalScrollbar = ({ data, setBodyPart, bodyPart, isBodyParts }) => (
-  <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
-    {data.map((item) => (
+    <Box position="relative" width="100%" overflow="hidden">
       <Box
-        key={item.id || item}
-        itemId={item.id || item}
-        title={item.id || item}
-        m="0 40px"
+        ref={scrollContainer}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'hidden',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+          padding: '20px 0',
+        }}
       >
-        {isBodyParts ? <BodyPart item={item} setBodyPart={setBodyPart} bodyPart={bodyPart} />
-        : <ExerciseCard exercise={item}/>}
+        {data.map((item) => (
+          <Box key={item.id || item} m="0 40px">
+            {isBodyParts ? (
+              <BodyPart item={item} setBodyPart={setBodyPart} bodyPart={bodyPart} />
+            ) : (
+              <ExerciseCard exercise={item} />
+            )}
+          </Box>
+        ))}
       </Box>
-    ))}
-  </ScrollMenu>
-);
+
+      <IconButton
+        onClick={() => scroll('left')}
+        sx={{
+          position: 'absolute',
+          left: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+        }}
+      >
+        <ArrowBackIos sx={{ color: '#FF0000' }} />
+      </IconButton>
+
+      <IconButton
+        onClick={() => scroll('right')}
+        sx={{
+          position: 'absolute',
+          right: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+        }}
+      >
+        <ArrowForwardIos sx={{ color: '#FF0000' }} />
+      </IconButton>
+    </Box>
+  );
+};
 
 export default HorizontalScrollbar;
