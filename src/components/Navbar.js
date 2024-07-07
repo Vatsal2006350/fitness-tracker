@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Typography } from '@mui/material';
+import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
@@ -51,6 +51,11 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     };
   }, [user]);
 
+  useEffect(() => {
+    // Scroll to the top whenever the location changes
+    window.scrollTo(0, 0);
+  }, [location]);
+
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUser(null);
@@ -65,16 +70,14 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   };
 
   const handleExercisesClick = () => {
-    if (user) {
+    navigate('/');
+    setTimeout(() => {
       scroller.scrollTo('exercises', {
         smooth: true,
         duration: 500,
         offset: -70,
       });
-    } else {
-      setShowSignUpForm(true);
-      setShowModal(true);
-    }
+    }, 100);
   };
 
   const toggleDrawer = () => {
@@ -112,7 +115,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal',
     fontSize: '16px',
     backgroundColor: isActive(path) && !isDrawer ? '#3A1212' : 'transparent',
-    color: isActive(path) && !isDrawer ? '#fff' : '#fff',
+    color: isActive(path) && !isDrawer ? '#fff' : isDrawer ? '#000' : '#fff',
     borderRadius: '5px',
     padding: '8px 16px',
     margin: '0 10px',
@@ -200,7 +203,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         </Toolbar>
       </AppBar>
 
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
         <Box
           sx={{
             width: 250,
