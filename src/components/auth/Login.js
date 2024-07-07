@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../Firebase';
 import {
@@ -12,8 +12,13 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Email } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const Login = ({ setUser, onClose, onSwitchToSignUp }) => {
@@ -23,6 +28,9 @@ const Login = ({ setUser, onClose, onSwitchToSignUp }) => {
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [openForgotPassword, setOpenForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetEmailError, setResetEmailError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -40,6 +48,38 @@ const Login = ({ setUser, onClose, onSwitchToSignUp }) => {
       })
       .catch((error) => {
         setError('Incorrect email or password. Please try again.');
+      });
+  };
+
+  const handleForgotPasswordOpen = () => {
+    setOpenForgotPassword(true);
+    setResetEmail(formData.email);
+  };
+
+  const handleForgotPasswordClose = () => {
+    setOpenForgotPassword(false);
+    setResetEmail('');
+    setResetEmailError('');
+  };
+
+  const handleResetEmailChange = (event) => {
+    setResetEmail(event.target.value);
+    setResetEmailError('');
+  };
+
+  const handleSendResetEmail = () => {
+    if (!resetEmail) {
+      setResetEmailError('Please enter your email address.');
+      return;
+    }
+
+    sendPasswordResetEmail(auth, resetEmail)
+      .then(() => {
+        alert('Password reset email sent. Please check your inbox.');
+        handleForgotPasswordClose();
+      })
+      .catch((error) => {
+        setResetEmailError('Error sending password reset email. Please try again.');
       });
   };
 
@@ -102,12 +142,75 @@ const Login = ({ setUser, onClose, onSwitchToSignUp }) => {
             Sign In
           </Button>
           <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Link component="button" variant="body2" onClick={handleForgotPasswordOpen}>
+              Forgot password?
+            </Link>
+          </Box>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Link component="button" variant="body2" onClick={onSwitchToSignUp}>
               Don't have an account? Sign Up
             </Link>
           </Box>
         </Box>
       </Paper>
+
+      <Dialog 
+        open={openForgotPassword} 
+        onClose={handleForgotPasswordClose} 
+        PaperProps={{ 
+          style: { borderRadius: 15, padding: '20px' } 
+        }}
+      >
+        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'primary.main' }}>
+          Reset Your Password
+        </DialogTitle>
+        <DialogContent>
+          <Box display="flex" justifyContent="center" mb={3}>
+            <Email sx={{ fontSize: 50, color: 'primary.main' }} />
+          </Box>
+          <DialogContentText sx={{ mb: 3, textAlign: 'center' }}>
+            Enter your email address and we'll send you a link to reset your password.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="resetEmail"
+            label="Email Address"
+            type="email"
+            fullWidth
+            variant="outlined"
+            value={resetEmail}
+            onChange={handleResetEmailChange}
+            error={!!resetEmailError}
+            helperText={resetEmailError}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Email color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center', flexDirection: 'column', gap: 1 }}>
+          <Button 
+            onClick={handleSendResetEmail} 
+            variant="contained" 
+            fullWidth
+            sx={{ borderRadius: 20, textTransform: 'none' }}
+          >
+            Send Reset Email
+          </Button>
+          <Button 
+            onClick={handleForgotPasswordClose} 
+            color="inherit"
+            sx={{ textTransform: 'none' }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
