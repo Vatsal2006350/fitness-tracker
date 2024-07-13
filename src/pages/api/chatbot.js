@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: "sk-proj-7Rv6p9sGNWOGJYdosf7QT3BlbkFJUly5J5gvYsK67BBjmjiY",
+  apiKey: process.env.REACT_APP_OPEN_AI_API_KEY,
 });
+
 
 export const runtime = 'edge';
 
