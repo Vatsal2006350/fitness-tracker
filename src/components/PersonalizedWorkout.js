@@ -86,7 +86,8 @@ const PersonalizedWorkout = ({ darkMode }) => {
     <Box sx={{ padding: 3, justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
       <Typography
         fontWeight={700}
-        sx={{ fontSize: { lg: '44px', xs: '40px' }, fontWeight: 'bold', fontFamily: 'Arial', color: darkMode ? 'white' : 'black' }}
+        sx={{ fontSize: { lg: '44px', xs: '40px' }, fontWeight: 'bold', fontFamily: 'Arial' }}
+        style={{ color: darkMode ? 'white' : 'black' }}
         mb={3}
       >
         PERSONALIZED WORKOUT PLANNER
@@ -99,7 +100,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="weight"
             value={formData.weight}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -109,7 +109,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="height"
             value={formData.height}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -119,7 +118,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="age"
             value={formData.age}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -130,7 +128,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
@@ -145,7 +142,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="goals"
             value={formData.goals}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           >
             {goals.map((goal) => (
               <MenuItem key={goal} value={goal}>
@@ -162,7 +158,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="level"
             value={formData.level}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           >
             {levels.map((level) => (
               <MenuItem key={level} value={level}>
@@ -179,7 +174,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
             name="workoutsPerWeek"
             value={formData.workoutsPerWeek}
             onChange={handleChange}
-            InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
           >
             {workoutFrequencies.map((frequency) => (
               <MenuItem key={frequency} value={frequency}>
@@ -189,34 +183,32 @@ const PersonalizedWorkout = ({ darkMode }) => {
           </TextField>
         </Grid>
         <Grid item xs={12}>
-    <Box display="flex" justifyContent="center" gap={2}>
-      <Button 
-        variant="contained" 
-        className="redButton" 
-        color="secondary" 
-        onClick={handleSubmit}
-      >
-        Generate Workout Plan
-      </Button>
-      
+          <Box display="flex" justifyContent="center" gap={2}>
+            <Button 
+              variant="contained" 
+              className="redButton" 
+              color="secondary" 
+              onClick={handleSubmit}
+            >
+              Generate Workout Plan
+            </Button>
+            {workoutPlan && (
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleDownload}
+              >
+                Download Workout Plan (PDF)
+              </Button>
+            )}
+          </Box>
+        </Grid>
+      </Grid>
       {workoutPlan && (
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleDownload}
-        >
-          Download Workout Plan (PDF)
-        </Button>
+        <Box mt={4}>
+          <WorkoutPlan plan={workoutPlan} />
+        </Box>
       )}
-    </Box>
-  </Grid>
-</Grid>
-
-{workoutPlan && (
-  <Box mt={4}>
-    <WorkoutPlan plan={workoutPlan} />
-  </Box>
-)}
     </Box>
   );
 };

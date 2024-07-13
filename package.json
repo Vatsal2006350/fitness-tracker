@@ -8,6 +8,8 @@
     "@mantine/core": "^7.10.2",
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.20",
+    "@stripe/react-stripe-js": "^2.7.3",
+    "@stripe/stripe-js": "^4.1.0",
     "@tabler/icons-react": "^3.6.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -32,6 +34,7 @@
     "react-dom": "^18.2.0",
     "react-horizontal-scrolling-menu": "^2.7.1",
     "react-loader-spinner": "^5.3.4",
+    "react-minimal-pie-chart": "^8.4.0",
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.9.0",
@@ -41,7 +44,9 @@
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "node server.js"
+
   },
   "eslintConfig": {
     "extends": [

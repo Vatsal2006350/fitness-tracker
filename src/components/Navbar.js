@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { Link, Stack, FormControlLabel, Switch, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery } from '@mui/material';
+import { Stack, AppBar, Toolbar, IconButton, Drawer, List, ListItem, Box, useMediaQuery, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { scroller } from 'react-scroll';
@@ -11,7 +11,7 @@ import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import { auth } from '../Firebase';
 
-const Navbar = ({ darkMode, setDarkMode }) => {
+const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -65,10 +65,6 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     });
   };
 
-  const handleModeChange = () => {
-    setDarkMode(!darkMode);
-  };
-
   const handleExercisesClick = () => {
     navigate('/');
     setTimeout(() => {
@@ -98,20 +94,25 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     setShowModal(true);
   };
 
+  const getFirstName = (fullName) => {
+    return fullName.split(' ')[0];
+  };
+
   const menuItems = [
     { text: 'Home', link: '/' },
     { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick },
     { text: 'Contact Us', link: '/contact' },
     { text: 'Personalized Workout', link: '/personalized-workout' },
-    user ? { text: `Welcome, ${user.displayName || user.email}`, onClick: null } : { text: 'Login', onClick: handleLoginClick },
-    user ? { text: 'Logout', onClick: handleLogout } : null,
+    { text: 'Chat', link: '/chat' },
+    { text: 'Pricing', link: '/pricing' },
+    user ? { text: 'Logout', onClick: handleLogout, button: true } : null,
   ].filter(Boolean);
 
   const menuItemStyle = (isDrawer, path, text) => ({
     textDecoration: 'none',
     color: isDrawer ? '#000' : '#fff',
     cursor: 'pointer',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: 'Roboto, sans-serif',
     fontWeight: isActive(path) && text !== 'Exercises' ? 'bold' : 'normal',
     fontSize: '16px',
     backgroundColor: isActive(path) && !isDrawer ? '#3A1212' : 'transparent',
@@ -176,98 +177,147 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               {renderMenuItems(false)}
             </Stack>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', mt: 1 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={darkMode}
-                  onChange={handleModeChange}
-                  name="darkModeToggle"
-                  color="default"
-                />
-              }
-              label="Dark Mode"
-              labelPlacement="start"
-              sx={{ color: '#fff', fontSize: '12px' }}
-            />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {!user ? (
+              <>
+                <Button
+                  onClick={handleLoginClick}
+                  variant="outlined"
+                  sx={{ 
+                    color: '#fff', 
+                    borderColor: '#fff', 
+                    borderRadius: '20px', 
+                    marginRight: '10px', 
+                    fontFamily: 'Roboto, sans-serif',
+                    '&:hover': {
+                      borderColor: '#fff',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={handleSignUpClick}
+                  variant="contained"
+                  sx={{ 
+                    backgroundColor: '#3A1212', 
+                    borderRadius: '20px', 
+                    fontFamily: 'Roboto, sans-serif',
+                    '&:hover': {
+                      backgroundColor: '#561818',
+                    }
+                  }}
+                >
+                  Sign up
+                </Button>
+              </>
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    padding: '8px 16px',
+                    fontFamily: 'Roboto, sans-serif',
+                    color: '#fff',
+                    marginRight: '10px',
+                  }}
+                >
+                  Welcome, {getFirstName(user.displayName || user.email)}
+                </Box>
+                <Button
+                  onClick={handleLogout}
+                  variant="outlined"
+                  sx={{ 
+                    color: '#fff', 
+                    borderColor: '#fff', 
+                    borderRadius: '20px', 
+                    fontFamily: 'Roboto, sans-serif',
+                    '&:hover': {
+                      borderColor: '#fff',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  Logout
+                </Button>
+              </>
+            )}
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="end"
+              onClick={toggleDrawer}
+              sx={{ display: { xs: 'flex', md: 'none' }, justifySelf: 'flex-end' }}
+            >
+              <MenuIcon />
+            </IconButton>
           </Box>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="end"
-            onClick={toggleDrawer}
-            sx={{ display: { xs: 'flex', md: 'none' }, justifySelf: 'flex-end' }}
-          >
-            <MenuIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
-
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
         <Box
           sx={{
             width: 250,
-            backgroundColor: '#fff',
+            backgroundColor: '#f0f0f0',
             height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
           }}
+          role="presentation"
+          onClick={toggleDrawer}
+          onKeyDown={toggleDrawer}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '16px' }}>
-            <RouterLink to="/" style={{ textDecoration: 'none' }} onClick={toggleDrawer}>
-              <img src={Logo} alt="logo" style={{ width: '50px', height: '50px', margin: '5px' }} />
-            </RouterLink>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
             <IconButton onClick={toggleDrawer}>
               <CloseIcon />
             </IconButton>
           </Box>
           <List>
             {renderMenuItems(true)}
-            <ListItem>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={darkMode}
-                    onChange={handleModeChange}
-                    name="darkModeToggle"
-                    color="default"
-                  />
-                }
-                label="Dark Mode"
-                labelPlacement="start"
-                sx={{ color: '#000', fontSize: '12px' }}
-              />
-            </ListItem>
           </List>
         </Box>
       </Drawer>
-
       {showModal && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 1300,
-            bgcolor: 'background.paper',
-          }}
-        >
-          {showSignUpForm ? (
-            <SignUp
-              onClose={() => user && setShowModal(false)}
-              onSwitchToLogin={() => setShowSignUpForm(false)}
-            />
-          ) : (
-            <Login
-              setUser={setUser}
-              onClose={() => user && setShowModal(false)}
-              onSwitchToSignUp={() => setShowSignUpForm(true)}
-            />
-          )}
-        </Box>
-      )}
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center', // Center vertically
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1000,
+    paddingTop: '0px', // Ensure some padding from the top
+  }}>
+    <div style={{
+      backgroundColor: '#fff',
+      padding: '20px',
+      borderRadius: '10px',
+      width: '90%',
+      maxWidth: '500px',
+      maxHeight: 'calc(100% - 120px)', // Ensure some extra space from top and bottom
+      overflowY: 'auto',
+      boxShadow: '0 0 10px rgba(0, 0, 0, 0.25)',
+      position: 'relative',
+      marginTop: '60px', // Ensure some margin from the top
+    }}>
+      <span style={{
+        position: 'absolute',
+        top: '10px',
+        right: '20px',
+        fontSize: '30px',
+        fontWeight: 'bold',
+        color: '#aaa',
+        cursor: 'pointer',
+      }} onClick={() => setShowModal(false)}>
+        &times;
+      </span>
+      {showSignUpForm 
+        ? <SignUp onSwitchToLogin={() => setShowSignUpForm(false)} /> 
+        : <Login onSwitchToSignUp={() => setShowSignUpForm(true)} />}
+    </div>
+  </div>
+)}
     </>
   );
 };

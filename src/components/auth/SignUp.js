@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../Firebase';
+import { auth, signInWithGoogle } from '../../Firebase';
 import {
   Box,
   Button,
@@ -14,8 +14,9 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Email } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const SignUp = ({ onClose, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -49,6 +50,16 @@ const SignUp = ({ onClose, onSwitchToLogin }) => {
       .catch((error) => {
         setError('Error signing up. Please try again.');
       });
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithGoogle();
+      onClose();
+      navigate('/');
+    } catch (error) {
+      console.error('Google Sign-Up error: ', error);
+    }
   };
 
   return (
@@ -137,11 +148,20 @@ const SignUp = ({ onClose, onSwitchToLogin }) => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Sign up
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleSignUp}
+            sx={{ mb: 2 }}
+          >
+            Sign up with Google
           </Button>
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Link component="button" variant="body2" onClick={onSwitchToLogin}>
-              Already have an account? Sign in
+              Already have an account? Login
             </Link>
           </Box>
         </Box>

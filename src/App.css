@@ -1,8 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-    font-family: 'Josefin Sans';
-    background-color: #FFFAFB;
-  }
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Specific styles for headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; /* Bold weight for headings */
+}
+
   
   * {
     padding: 0px;
