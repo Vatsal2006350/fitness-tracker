@@ -32,7 +32,7 @@ const ChatPage = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${}`,
+            'Authorization': `Bearer ${process.env.REACT_APP_OPEN_AI_API_KEY}`,
           },
         }
       );
