@@ -110,3 +110,6 @@
 .red-container .early-bird-description {
   color: var(--neutral-white);
 }
+.PricingCard .early-bird-offer {
+  margin-bottom: 16px; /* Adjust this value to increase the spacing */
+}

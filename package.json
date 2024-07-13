@@ -19,7 +19,7 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "deps": "^1.0.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.5",
     "emailjs-com": "^3.2.0",
     "firebase": "^10.12.3",
     "html2canvas": "^1.4.1",
@@ -46,7 +46,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server.js"
-
   },
   "eslintConfig": {
     "extends": [

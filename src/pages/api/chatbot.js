@@ -1,13 +1,12 @@
 import OpenAI from 'openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 const openai = new OpenAI({
-  apiKey: "sk-proj-RnFJoiRf4bTUZnF1jQkLT3BlbkFJOM8cSyrpSF8DQW0WlPvZ",
+  apiKey: "sk-proj-7Rv6p9sGNWOGJYdosf7QT3BlbkFJUly5J5gvYsK67BBjmjiY",
 });
 
 export const runtime = 'edge';
 
-export async function POST(req) {
+export async function POST(req, res) {
   try {
     const { messages } = await req.json();
 
@@ -23,9 +22,6 @@ export async function POST(req) {
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.error('Error processing chat request:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to process request' }),
-    };
+    res.status(500).json({ error: 'Failed to process request' });
   }
 }

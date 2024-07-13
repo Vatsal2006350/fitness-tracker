@@ -23,10 +23,6 @@ const PricingCard = ({
       paymentLink = isMonthly
         ? "https://buy.stripe.com/test_aEU7t61iH5Vqdb29AE"
         : "https://buy.stripe.com/test_7sI00Ed1pcjOef6145";
-    } else if (title === "Ultra Plan") {
-      paymentLink = isMonthly
-        ? "https://buy.stripe.com/test_cN200E1iHdnS8UM7su"
-        : "https://buy.stripe.com/test_cN2cNqf9xbfKdb2fZ1";
     } else {
       // For Basic Plan or any other plan, you can define a default behavior
       alert("This plan is free!");
@@ -48,7 +44,7 @@ const PricingCard = ({
                 {title === "Basic Plan" ? "$0" : price}
               </h1>
               {title === "Basic Plan" && (
-                <p className="card-price-monthly"></p>
+                <p className="card-price-monthly">{monthlyPrice}</p>
               )}
             </>
           ) : (
@@ -69,7 +65,7 @@ const PricingCard = ({
         <div className="card-send-up">{sendUp}</div>
       </div>
       {title === "Premium Plan" && isMonthly && (
-        <p className="early-bird-offer">Claim our launch offer before August 15. After that, the price increases to $2.99/month.</p>
+        <p className="early-bird-offer">Launch Offer: Sign up by August 15 to get our introductory rate! Prices increase to $2.99/month after this date.</p>
       )}
       <button className="card-btn" onClick={handleSubscribe}>{buttonText}</button>
     </div>

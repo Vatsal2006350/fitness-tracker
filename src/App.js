@@ -34,6 +34,11 @@ const App = () => {
     },
   });
 
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${process.env.REACT_APP_OPEN_AI_API_KEY}`,
+  };
+
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
@@ -44,7 +49,7 @@ const App = () => {
           <Route path="/exercise/:id" element={<ExerciseDetail />} />
           <Route path="/contact" element={<ContactUs darkMode={darkMode} />} />
           <Route path="/personalized-workout" element={<PersonalizedWorkout />} />
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatPage headers={headers} />} />
           <Route path="/pricing" element={
             <div className="PricingApp">
               <div className="app-container">
@@ -85,16 +90,6 @@ const App = () => {
                     storage="Access to workout poses and exercise videos (access to 5 body part categories)"
                     users="Enhanced access to workout planner (15 plans per week)"
                     sendUp="10 chats with AI chatbot per day"
-                    isMonthly={selectMonthly}
-                  />
-                  <PricingCard
-                    title="Ultra Plan"
-                    price={selectMonthly ? "$3.99" : "$36.99"}
-                    monthlyPrice="$3.99"
-                    annualPrice="$36.99"
-                    storage="Unlimited access to workout poses and exercise videos (access to 100+ workout exercises)"
-                    users="Unlimited access to workout planner"
-                    sendUp="Unlimited chats with AI chatbot"
                     isMonthly={selectMonthly}
                   />
                 </div>
