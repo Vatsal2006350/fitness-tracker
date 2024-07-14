@@ -11,7 +11,7 @@ import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import { auth } from '../Firebase';
 
-const Navbar = () => {
+const Navbar = ({ onManageSubscription }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -100,13 +100,11 @@ const Navbar = () => {
 
   const menuItems = [
     { text: 'Home', link: '/' },
-    { text: 'Exercises', link: '/#exercises', onClick: handleExercisesClick },
-    { text: 'Contact Us', link: '/contact' },
-    { text: 'Personalized Workout', link: '/personalized-workout' },
     { text: 'Chat', link: '/chat' },
+    { text: 'Personalized Workout', link: '/personalized-workout' },
     { text: 'Pricing', link: '/pricing' },
-    user ? { text: 'Logout', onClick: handleLogout, button: true } : null,
-  ].filter(Boolean);
+    { text: 'Contact Us', link: '/contact' },
+  ];
 
   const menuItemStyle = (isDrawer, path, text) => ({
     textDecoration: 'none',
@@ -133,7 +131,7 @@ const Navbar = () => {
       <ListItem
         button={isDrawer}
         key={item.text}
-        onClick={isDrawer ? (user ? item.onClick : null) : (user ? item.onClick : handleSignUpClick)}
+        onClick={isDrawer ? null : null}
         sx={{ padding: isDrawer ? '8px 16px' : 'unset' }}
       >
         {item.text === 'Exercises' && !isDrawer ? (
@@ -147,7 +145,7 @@ const Navbar = () => {
           <RouterLink
             to={user ? item.link : '#'}
             style={menuItemStyle(isDrawer, item.link, item.text)}
-            onClick={user ? item.onClick : handleSignUpClick}
+            onClick={user ? null : handleSignUpClick}
           >
             {item.text}
           </RouterLink>
@@ -225,6 +223,21 @@ const Navbar = () => {
                   Welcome, {getFirstName(user.displayName || user.email)}
                 </Box>
                 <Button
+                  onClick={onManageSubscription}
+                  variant="contained"
+                  sx={{ 
+                    backgroundColor: '#3A1212', 
+                    borderRadius: '20px', 
+                    fontFamily: 'Roboto, sans-serif',
+                    marginRight: '10px',
+                    '&:hover': {
+                      backgroundColor: '#561818',
+                    }
+                  }}
+                >
+                  Manage Subscription
+                </Button>
+                <Button
                   onClick={handleLogout}
                   variant="outlined"
                   sx={{ 
@@ -276,48 +289,48 @@ const Navbar = () => {
         </Box>
       </Drawer>
       {showModal && (
-  <div style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center', // Center vertically
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    zIndex: 1000,
-    paddingTop: '0px', // Ensure some padding from the top
-  }}>
-    <div style={{
-      backgroundColor: '#fff',
-      padding: '20px',
-      borderRadius: '10px',
-      width: '90%',
-      maxWidth: '500px',
-      maxHeight: 'calc(100% - 120px)', // Ensure some extra space from top and bottom
-      overflowY: 'auto',
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.25)',
-      position: 'relative',
-      marginTop: '60px', // Ensure some margin from the top
-    }}>
-      <span style={{
-        position: 'absolute',
-        top: '10px',
-        right: '20px',
-        fontSize: '30px',
-        fontWeight: 'bold',
-        color: '#aaa',
-        cursor: 'pointer',
-      }} onClick={() => setShowModal(false)}>
-        &times;
-      </span>
-      {showSignUpForm 
-        ? <SignUp onSwitchToLogin={() => setShowSignUpForm(false)} /> 
-        : <Login onSwitchToSignUp={() => setShowSignUpForm(true)} />}
-    </div>
-  </div>
-)}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          zIndex: 1000,
+          paddingTop: '0px',
+        }}>
+          <div style={{
+            backgroundColor: '#fff',
+            padding: '20px',
+            borderRadius: '10px',
+            width: '90%',
+            maxWidth: '500px',
+            maxHeight: 'calc(100% - 120px)',
+            overflowY: 'auto',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.25)',
+            position: 'relative',
+            marginTop: '60px',
+          }}>
+            <span style={{
+              position: 'absolute',
+              top: '10px',
+              right: '20px',
+              fontSize: '30px',
+              fontWeight: 'bold',
+              color: '#aaa',
+              cursor: 'pointer',
+            }} onClick={() => setShowModal(false)}>
+              &times;
+            </span>
+            {showSignUpForm 
+              ? <SignUp onSwitchToLogin={() => setShowSignUpForm(false)} /> 
+              : <Login onSwitchToSignUp={() => setShowSignUpForm(true)} />}
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -24,7 +24,7 @@ const ChatPage = () => {
             { role: 'system', content: 'You are a highly experienced fitness coach providing detailed and comprehensive fitness advice.' },
             { role: 'user', content: prompt }
           ],
-          max_tokens: 300, // Increased the max tokens to allow for longer responses
+          max_tokens: 1000, // Increased to allow for longer responses
           n: 1,
           stop: null,
           temperature: 0.7,
@@ -46,6 +46,18 @@ const ChatPage = () => {
     }
   };
 
+  const formatMessage = (text) => {
+    // Replace **text** with <strong>text</strong> for bold formatting
+    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Add line breaks for paragraphs
+    return formattedText.split('\n').map((paragraph, index) => (
+      <React.Fragment key={index}>
+        <span dangerouslySetInnerHTML={{ __html: paragraph }} />
+        {index < formattedText.split('\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Box
       sx={{
@@ -59,7 +71,7 @@ const ChatPage = () => {
       }}
     >
       <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#ffffff' }}>
-        Chat with us
+        Chat with our Fitness Bot
       </Typography>
       <Paper
         sx={{
@@ -75,7 +87,7 @@ const ChatPage = () => {
           {messages.map((msg, index) => (
             <ListItem key={index} sx={{ justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
               <ListItemText
-                primary={msg.text}
+                primary={formatMessage(msg.text)}
                 sx={{
                   textAlign: msg.sender === 'user' ? 'right' : 'left',
                   backgroundColor: msg.sender === 'user' ? '#0078d4' : '#4a4a4a',
@@ -83,6 +95,9 @@ const ChatPage = () => {
                   borderRadius: '10px',
                   color: '#ffffff',
                   maxWidth: '80%',
+                  '& .MuiTypography-root': {
+                    whiteSpace: 'pre-wrap',
+                  },
                 }}
               />
             </ListItem>

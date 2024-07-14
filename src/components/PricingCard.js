@@ -10,10 +10,13 @@ const PricingCard = ({
   users,
   sendUp,
   isMonthly,
+  handleGetStarted // Add the handleGetStarted prop
 }) => {
-  const originalPrice = (parseFloat(monthlyPrice.slice(1)) * 12).toFixed(2);
+  const monthlyPriceNumber = parseFloat(monthlyPrice.slice(1));
+  const annualPriceNumber = parseFloat(annualPrice.slice(1));
+  const originalAnnualPrice = (monthlyPriceNumber * 12).toFixed(2);
   const discountPercentage = (
-    (1 - parseFloat(annualPrice.slice(1)) / originalPrice) *
+    (1 - annualPriceNumber / originalAnnualPrice) *
     100
   ).toFixed(2);
 
@@ -21,14 +24,12 @@ const PricingCard = ({
     let paymentLink;
     if (title === "Premium Plan") {
       paymentLink = isMonthly
-        ? "https://buy.stripe.com/test_aEU7t61iH5Vqdb29AE"
-        : "https://buy.stripe.com/test_7sI00Ed1pcjOef6145";
+        ? "https://buy.stripe.com/eVa6secltdZa6di4gh"
+        : "https://buy.stripe.com/7sI17Udpx5sEbxC5kk";
+      window.location.href = paymentLink;
     } else {
-      // For Basic Plan or any other plan, you can define a default behavior
-      alert("This plan is free!");
-      return;
+      handleGetStarted(); // Call the handleGetStarted function for the Basic Plan
     }
-    window.location.href = paymentLink;
   };
 
   const buttonText = title === "Basic Plan" ? "Get Started for Free" : "Subscribe Now";
@@ -38,24 +39,11 @@ const PricingCard = ({
       <header>
         <p className="card-title">{title}</p>
         <div className="price-container">
-          {isMonthly ? (
-            <>
-              <h1 className={`card-price ${title === "Basic Plan" ? "basic-plan-price" : ""}`}>
-                {title === "Basic Plan" ? "$0" : price}
-              </h1>
-              {title === "Basic Plan" && (
-                <p className="card-price-monthly">{monthlyPrice}</p>
-              )}
-            </>
-          ) : (
-            <>
-              <h1 className="card-price">
-                {price} {title !== "Basic Plan" && <span className="original-price">${originalPrice}</span>}
-              </h1>
-              {title !== "Basic Plan" && (
-                <p className="savings-text">Save {discountPercentage}% with yearly plan</p>
-              )}
-            </>
+          <h1 className="card-price">
+            {price}
+          </h1>
+          {title === "Premium Plan" && !isMonthly && (
+            <p className="savings-text">Save {discountPercentage}% with yearly plan</p>
           )}
         </div>
       </header>

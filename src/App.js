@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Box, CssBaseline, createTheme, ThemeProvider } from '@mui/material';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Box, CssBaseline, createTheme, ThemeProvider, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
 import PricingCard from "./components/PricingCard";
 import "./assets/css/PricingApp.css";
@@ -13,14 +13,29 @@ import ContactUs from './components/ContactUs';
 import PersonalizedWorkout from './components/PersonalizedWorkout';
 import ChatPage from './components/ChatPage';
 import DarkModeToggle from './components/DarkModeToggle';
+import { auth } from './Firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [selectMonthly, setSelectMonthly] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setIsLoggedIn(!!currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const darkTheme = createTheme({
     palette: {
@@ -39,11 +54,28 @@ const App = () => {
     'Authorization': `Bearer ${process.env.REACT_APP_OPEN_AI_API_KEY}`,
   };
 
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handleGetStarted = () => {
+    navigate('/');
+    setShowPopup(true);
+  };
+
+  const handleManageSubscription = () => {
+    window.location.href = 'https://billing.stripe.com/p/login/14k3dfaXYePY8i4aEE';
+  };
+
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <Box className="App">
-        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+        <Navbar 
+          darkMode={darkMode} 
+          setDarkMode={setDarkMode} 
+          onManageSubscription={handleManageSubscription}
+        />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/exercise/:id" element={<ExerciseDetail />} />
@@ -78,19 +110,22 @@ const App = () => {
                     title="Basic Plan"
                     price={selectMonthly ? "$0" : "$0"}
                     storage="Limited access to workout poses (access to only 2 body part categories)"
-                    users="Limited access to workout planner (3 plans per week)"
+                    users="No access to workout planner"
                     sendUp="No access to AI Fitness Chat bot"
                     isMonthly={selectMonthly}
+                    isLoggedIn={isLoggedIn}
+                    handleGetStarted={handleGetStarted}
                   />
                   <PricingCard
                     title="Premium Plan"
-                    price={selectMonthly ? "$1" : "$28.99"}
+                    price={selectMonthly ? "$1" : "$10.99"}
                     monthlyPrice="$1"
-                    annualPrice="$28.99"
-                    storage="Access to workout poses and exercise videos (access to 5 body part categories)"
-                    users="Enhanced access to workout planner (15 plans per week)"
-                    sendUp="10 chats with AI chatbot per day"
+                    annualPrice="$10.99"
+                    storage="Unlimited access to workout poses and exercise videos (access to 100+ workout exercises)"
+                    users="Unlimited access to workout planner"
+                    sendUp="Unlimited chats with AI chatbot"
                     isMonthly={selectMonthly}
+                    isLoggedIn={isLoggedIn}
                   />
                 </div>
               </div>
@@ -101,6 +136,23 @@ const App = () => {
         <Footer />
       </Box>
       <Analytics />
+
+      <Dialog
+        open={showPopup}
+        onClose={handleClosePopup}
+      >
+        <DialogTitle>Welcome to Fitness Freak!</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You have access to limited resources with the free plan. Consider subscribing for exclusive features like a personalized workout planner, fitness AI bot, and more.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePopup} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 };
