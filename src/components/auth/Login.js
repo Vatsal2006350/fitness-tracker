@@ -4,20 +4,21 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../Firebase';
 
 const Login = ({ onSwitchToSignUp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      console.error('Error logging in:', error);
+      setError(error.message);
     }
   };
 
@@ -26,13 +27,15 @@ const Login = ({ onSwitchToSignUp }) => {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      setError(error.message);
     }
   };
 
   const handlePasswordVisibilityToggle = () => {
     setShowPassword(!showPassword);
   };
+
+  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -43,6 +46,7 @@ const Login = ({ onSwitchToSignUp }) => {
           <Typography component="h1" variant="h5">
             Login
           </Typography>
+          {error && <Typography color="error">{error}</Typography>}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -89,6 +93,7 @@ const Login = ({ onSwitchToSignUp }) => {
             >
               Sign in with Google
             </Button>
+            
             <Box sx={{ textAlign: 'center', mt: 2 }}>
               <Link component="button" variant="body2" onClick={onSwitchToSignUp}>
                 Don't have an account? Sign up

@@ -1,0 +1,31 @@
+/* Update these styles in your Navbar.css file */
+
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+    z-index: 1; /* Ensure the text is above the pseudo-element */
+  }
+  
+  .nav-link::before { /* Changed from ::after to ::before */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0; /* Start with no height */
+    background-color: #3A1212;
+    transition: height 0.3s ease;
+    z-index: -1; /* Place the pseudo-element behind the text */
+  }
+  
+  .nav-link:hover::before {
+    height: 100%; /* Fill up on hover */
+  }
+  
+  .nav-link:hover {
+    color: #fff !important; /* Keep text white for better contrast */
+  }
+  
+  /* Remove the fillUp animation as it's no longer needed */
+  
+  /* Remove the semi-transparent background as it's no longer needed */

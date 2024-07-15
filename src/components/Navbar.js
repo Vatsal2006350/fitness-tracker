@@ -10,6 +10,7 @@ import Logo from '../assets/images/Logo.png';
 import Login from './auth/Login';
 import SignUp from './auth/SignUp';
 import { auth } from '../Firebase';
+import '../assets/css/Navbar.css'
 
 const Navbar = ({ onManageSubscription }) => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const Navbar = ({ onManageSubscription }) => {
   const [scrollCount, setScrollCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showSignUpForm, setShowSignUpForm] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,7 +54,6 @@ const Navbar = ({ onManageSubscription }) => {
   }, [user]);
 
   useEffect(() => {
-    // Scroll to the top whenever the location changes
     window.scrollTo(0, 0);
   }, [location]);
 
@@ -120,11 +121,11 @@ const Navbar = ({ onManageSubscription }) => {
     margin: '0 10px',
     whiteSpace: 'nowrap',
     textAlign: 'center',
-    transition: 'background-color 0.3s ease-in-out',
-    '&:hover': {
-      backgroundColor: !isActive(path) && !isDrawer ? '#3A1212' : 'rgba(0, 0, 0, 0.1)',
-    },
+    position: 'relative',
+    overflow: 'hidden',
+    // Remove the transition and transform properties from here
   });
+  
 
   const renderMenuItems = (isDrawer) =>
     menuItems.map((item) => (
@@ -138,6 +139,7 @@ const Navbar = ({ onManageSubscription }) => {
           <div
             onClick={user ? handleExercisesClick : handleSignUpClick}
             style={menuItemStyle(isDrawer, item.link, item.text)}
+            className="nav-link" // Add this class
           >
             {item.text}
           </div>
@@ -146,19 +148,20 @@ const Navbar = ({ onManageSubscription }) => {
             to={user ? item.link : '#'}
             style={menuItemStyle(isDrawer, item.link, item.text)}
             onClick={user ? null : handleSignUpClick}
+            className="nav-link" // Add this class
           >
             {item.text}
           </RouterLink>
         )}
       </ListItem>
     ));
-
+    
   return (
     <>
       <AppBar
         position="sticky"
         sx={{
-          backgroundColor: 'rgba(139, 0, 0, 0.8)',
+          backgroundColor: darkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(139, 0, 0, 0.8)',
           backdropFilter: 'blur(10px)',
           color: '#fff',
           boxShadow: 'none',
@@ -200,6 +203,7 @@ const Navbar = ({ onManageSubscription }) => {
                   variant="contained"
                   sx={{ 
                     backgroundColor: '#3A1212', 
+                    color: '#fff', // Ensure the text color remains white
                     borderRadius: '20px', 
                     fontFamily: 'Roboto, sans-serif',
                     '&:hover': {
