@@ -28,28 +28,28 @@ const Navbar = ({ onManageSubscription }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        setShowModal(false);
+        // setShowModal(false);
       } else {
         setUser(null);
       }
     });
 
-    const handleScroll = () => {
-      setScrollCount((prevCount) => {
-        const newCount = prevCount + 1;
-        if (newCount === 10 && !user) {
-          setShowSignUpForm(true);
-          setShowModal(true);
-        }
-        return newCount;
-      });
-    };
+    // const handleScroll = () => {
+    //   setScrollCount((prevCount) => {
+    //     const newCount = prevCount + 1;
+    //     if (newCount === 10 && !user) {
+    //       setShowSignUpForm(true);
+    //       setShowModal(true);
+    //     }
+    //     return newCount;
+    //   });
+    // };
 
-    window.addEventListener('scroll', handleScroll);
+    // window.addEventListener('scroll', handleScroll);
 
     return () => {
       unsubscribe();
-      window.removeEventListener('scroll', handleScroll);
+      // window.removeEventListener('scroll', handleScroll);
     };
   }, [user]);
 
