@@ -28,28 +28,14 @@ const Navbar = ({ onManageSubscription }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        // setShowModal(false);
+        setShowModal(false); // Hide the modal when the user logs in
       } else {
         setUser(null);
       }
     });
 
-    // const handleScroll = () => {
-    //   setScrollCount((prevCount) => {
-    //     const newCount = prevCount + 1;
-    //     if (newCount === 10 && !user) {
-    //       setShowSignUpForm(true);
-    //       setShowModal(true);
-    //     }
-    //     return newCount;
-    //   });
-    // };
-
-    // window.addEventListener('scroll', handleScroll);
-
     return () => {
       unsubscribe();
-      // window.removeEventListener('scroll', handleScroll);
     };
   }, [user]);
 
@@ -123,9 +109,7 @@ const Navbar = ({ onManageSubscription }) => {
     textAlign: 'center',
     position: 'relative',
     overflow: 'hidden',
-    // Remove the transition and transform properties from here
   });
-  
 
   const renderMenuItems = (isDrawer) =>
     menuItems.map((item) => (
@@ -139,7 +123,7 @@ const Navbar = ({ onManageSubscription }) => {
           <div
             onClick={user ? handleExercisesClick : handleSignUpClick}
             style={menuItemStyle(isDrawer, item.link, item.text)}
-            className="nav-link" // Add this class
+            className="nav-link"
           >
             {item.text}
           </div>
@@ -148,7 +132,7 @@ const Navbar = ({ onManageSubscription }) => {
             to={user ? item.link : '#'}
             style={menuItemStyle(isDrawer, item.link, item.text)}
             onClick={user ? null : handleSignUpClick}
-            className="nav-link" // Add this class
+            className="nav-link"
           >
             {item.text}
           </RouterLink>
@@ -203,7 +187,7 @@ const Navbar = ({ onManageSubscription }) => {
                   variant="contained"
                   sx={{ 
                     backgroundColor: '#3A1212', 
-                    color: '#fff', // Ensure the text color remains white
+                    color: '#fff', 
                     borderRadius: '20px', 
                     fontFamily: 'Roboto, sans-serif',
                     '&:hover': {
