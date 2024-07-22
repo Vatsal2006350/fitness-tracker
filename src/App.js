@@ -106,7 +106,7 @@ const App = () => {
                   </div>
                 </header>
                 <div className="pricing-cards">
-                  <PricingCard
+                  {/* <PricingCard
                     title="Basic Plan"
                     price={selectMonthly ? "$0" : "$0"}
                     storage="Limited access to workout poses (access to only 2 body part categories)"
@@ -115,7 +115,7 @@ const App = () => {
                     isMonthly={selectMonthly}
                     isLoggedIn={isLoggedIn}
                     handleGetStarted={handleGetStarted}
-                  />
+                  /> */}
                   <PricingCard
                     title="Premium Plan"
                     price={selectMonthly ? "$1" : "$10.99"}
