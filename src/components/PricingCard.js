@@ -24,8 +24,8 @@ const PricingCard = ({
     let paymentLink;
     if (title === "Premium Plan") {
       paymentLink = isMonthly
-        ? "https://buy.stripe.com/eVa6secltdZa6di4gh"
-        : "https://buy.stripe.com/7sI17Udpx5sEbxC5kk";
+        ? "https://buy.stripe.com/00gbMycltcV69pu8wy"
+        : "https://buy.stripe.com/3csdUG99hdZa0SYaEH";
       window.location.href = paymentLink;
     } else {
       handleGetStarted(); // Call the handleGetStarted function for the Basic Plan
@@ -61,3 +61,6 @@ const PricingCard = ({
 };
 
 export default PricingCard;
+
+
+

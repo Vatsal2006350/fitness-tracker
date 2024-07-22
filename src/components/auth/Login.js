@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
-import { Box, Button, Container, CssBaseline, Grid, Link, Paper, TextField, Typography, InputAdornment } from '@mui/material';
+import { Box, Button, Container, CssBaseline, Paper, TextField, Typography, InputAdornment, Link } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../Firebase';
+import { signInWithEmail, signUpWithEmail, signInWithGoogle } from '../../Firebase'; // Adjust import path
 
 const Login = ({ onSwitchToSignUp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      if (isSignUp) {
+        await signUpWithEmail(email, password);
+      } else {
+        await signInWithEmail(email, password);
+      }
     } catch (error) {
       setError(error.message);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithGoogle();
     } catch (error) {
       setError(error.message);
     }
@@ -35,7 +38,10 @@ const Login = ({ onSwitchToSignUp }) => {
     setShowPassword(!showPassword);
   };
 
-  
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+    setError(null);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -44,7 +50,7 @@ const Login = ({ onSwitchToSignUp }) => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <LockOutlinedIcon />
           <Typography component="h1" variant="h5">
-            Login
+            {isSignUp ? 'Sign Up' : 'Login'}
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -82,7 +88,7 @@ const Login = ({ onSwitchToSignUp }) => {
               }}
             />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Login
+              {isSignUp ? 'Sign Up' : 'Login'}
             </Button>
             <Button
               fullWidth
@@ -93,10 +99,9 @@ const Login = ({ onSwitchToSignUp }) => {
             >
               Sign in with Google
             </Button>
-            
             <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Link component="button" variant="body2" onClick={onSwitchToSignUp}>
-                Don't have an account? Sign up
+              <Link component="button" variant="body2" onClick={toggleSignUp}>
+                {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign up"}
               </Link>
             </Box>
           </Box>

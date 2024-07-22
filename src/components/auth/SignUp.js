@@ -4,8 +4,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../../Firebase';
+import { signUpWithEmail } from '../../Firebase'; // Adjust import path
+import { signInWithGoogle } from '../../Firebase'; // Adjust import path
 
 const SignUp = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState('');
@@ -16,16 +16,15 @@ const SignUp = ({ onSwitchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await signUpWithEmail(email, password);
     } catch (err) {
       setError(err.message);
     }
   };
 
   const handleGoogleSignUp = async () => {
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithGoogle();
     } catch (error) {
       setError(error.message);
     }
@@ -87,16 +86,7 @@ const SignUp = ({ onSwitchToLogin }) => {
               variant="outlined"
               startIcon={<GoogleIcon />}
               onClick={handleGoogleSignUp}
-              sx={{
-                mb: 2,
-                backgroundColor: 'transparent', // Transparent background
-                border: '1px solid #4285F4', // Border color for the button
-                color: '#4285F4', // Text color
-                '&:hover': {
-                  backgroundColor: '#4285F4', // Background color on hover
-                  color: '#fff', // Text color on hover
-                }
-              }}
+              sx={{ mb: 2 }}
             >
               Sign up with Google
             </Button>
