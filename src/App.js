@@ -15,6 +15,8 @@ import ChatPage from './components/ChatPage';
 import DarkModeToggle from './components/DarkModeToggle';
 import { auth } from './Firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);

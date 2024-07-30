@@ -43,7 +43,6 @@ const PersonalizedWorkout = ({ darkMode }) => {
       const pageHeight = doc.internal.pageSize.height;
   
       Object.entries(workoutPlan).forEach(([day, exercises], index) => {
-        // Check if there's enough space on the current page
         if (yPosition > pageHeight - 60) {
           doc.addPage();
           yPosition = 20;
@@ -161,7 +160,7 @@ const PersonalizedWorkout = ({ darkMode }) => {
           >
             {levels.map((level) => (
               <MenuItem key={level} value={level}>
-                {level.charAt(0).toUpperCase() + level.slice(1)}
+                {typeof level === 'string' ? level.charAt(0).toUpperCase() + level.slice(1) : level}
               </MenuItem>
             ))}
           </TextField>
