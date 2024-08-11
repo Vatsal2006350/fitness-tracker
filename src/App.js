@@ -90,9 +90,8 @@ const App = () => {
                 <header>
                   <h1 className="header-topic">Our Pricing Plans</h1>
                   <p className="header-description">
-                    Fitness Freak's free plan gives you a taste of fitness with access to exercises for just two body parts and three uses of the workout planner per week. Want more? Check out our premium options below to support this awesome initiative and level up your health.
+                    Fitness Freak's free plan gives you limited access to exercises for just two body parts and three uses of the workout planner per week. Want more? Check out our premium options below to support this awesome initiative and level up your health.
                     <br /><br />
-                    <strong>Early Bird Offer:</strong> Subscribe to our Premium Plan by August 15 and get it for just $1/month! Don't miss this chance to transform your fitness journey at an unbeatable price!
                   </p>
                   <div className="header-row">
                     <button

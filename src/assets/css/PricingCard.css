@@ -1,115 +1,106 @@
-.PricingCard {
-  background: white;
-  border-radius: 10px;
+.pricing-card {
+  background-color: #ffffff;
+  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: center;
-  transition: transform 0.2s;
+  padding: 24px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.PricingCard:hover {
-  transform: translateY(-10px);
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.premium-card {
+  border: 2px solid #ff4d4f;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .card-title {
+  color: #333;
   font-size: 24px;
-  font-weight: bold;
   margin-bottom: 10px;
 }
 
 .price-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-bottom: 20px;
 }
 
 .card-price {
-  font-size: 36px;
-  font-weight: bold;
   color: #ff4d4f;
+  font-size: 48px;
+  font-weight: bold;
   margin: 0;
 }
 
-.original-price {
-  text-decoration: line-through;
-  color: #a1a1a1;
-  margin-right: 10px;
-}
-
 .savings-text {
-  font-size: 16px;
-  font-weight: bold;
-  color: white; /* Changed to white */
-  background-color: #ff4d4f; /* Added background color */
-  padding: 5px 10px;
-  border-radius: 5px;
+  color: #ff4d4f;
+  font-size: 14px;
   margin-top: 5px;
 }
 
 .card-features {
-  margin: 20px 0;
+  flex-grow: 1;
+  margin-bottom: 20px;
 }
 
-.card-storage,
-.card-users-allowed,
-.card-send-up {
+.feature {
+  color: #333;
   font-size: 16px;
   margin-bottom: 10px;
+  position: relative;
+  padding-left: 24px;
 }
 
-.card-btn {
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
-}
-
-.card-btn:hover {
-  background-color: #e04344;
+.feature::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #ff4d4f;
 }
 
 .early-bird-offer {
-  font-size: 14px;
+  background-color: #fff1f0;
+  border-radius: 4px;
   color: #ff4d4f;
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.early-bird-description {
   font-size: 14px;
-  color: #ff4d4f;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.price-container {
-  position: relative;
-}
-
-.price-container .original-price {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
+.subscribe-btn {
+  background-color: #ff4d4f;
+  border: 2px solid #ff4d4f;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
   font-size: 16px;
-  text-decoration: line-through;
-  color: #888;
+  font-weight: bold;
+  padding: 12px 24px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%;
 }
 
-/* Limited Time Offer and Premium Plan Text */
-.red-container .early-bird-offer,
-.red-container .card-title,
-.red-container .card-storage,
-.red-container .card-users-allowed,
-.red-container .card-send-up,
-.red-container .early-bird-description {
-  color: var(--neutral-white);
+.subscribe-btn:hover {
+  background-color: #ffffff;
+  color: #ff4d4f;
 }
-.PricingCard .early-bird-offer {
-  margin-bottom: 16px; /* Adjust this value to increase the spacing */
+
+/* For the premium plan card, we'll keep the white button with red text */
+.premium-card .subscribe-btn {
+  background-color: #ffffff;
+  color: #ff4d4f;
+}
+
+.premium-card .subscribe-btn:hover {
+  background-color: #ff4d4f;
+  color: #ffffff;
 }

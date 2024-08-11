@@ -10,7 +10,7 @@ const PricingCard = ({
   users,
   sendUp,
   isMonthly,
-  handleGetStarted // Add the handleGetStarted prop
+  handleGetStarted
 }) => {
   const monthlyPriceNumber = parseFloat(monthlyPrice.slice(1));
   const annualPriceNumber = parseFloat(annualPrice.slice(1));
@@ -28,39 +28,39 @@ const PricingCard = ({
         : "https://buy.stripe.com/3csdUG99hdZa0SYaEH";
       window.location.href = paymentLink;
     } else {
-      handleGetStarted(); // Call the handleGetStarted function for the Basic Plan
+      handleGetStarted();
     }
   };
 
   const buttonText = title === "Basic Plan" ? "Get Started for Free" : "Subscribe Now";
 
   return (
-    <div className={`PricingCard ${title === "Premium Plan" ? "red-container" : ""}`}>
-      <header>
-        <p className="card-title">{title}</p>
+    <div className={`pricing-card ${title === "Premium Plan" ? "premium-card" : ""}`}>
+      <header className="card-header">
+        <h2 className="card-title">{title}</h2>
         <div className="price-container">
-          <h1 className="card-price">
-            {price}
-          </h1>
+          <h1 className="card-price">{price}<span className="price-period">/{isMonthly ? 'month' : 'year'}</span></h1>
           {title === "Premium Plan" && !isMonthly && (
             <p className="savings-text">Save {discountPercentage}% with yearly plan</p>
           )}
         </div>
       </header>
       <div className="card-features">
-        <div className="card-storage">{storage}</div>
-        <div className="card-users-allowed">{users}</div>
-        <div className="card-send-up">{sendUp}</div>
+        <p className="feature">{storage}</p>
+        <p className="feature">{users}</p>
+        <p className="feature">{sendUp}</p>
       </div>
       {title === "Premium Plan" && isMonthly && (
-        <p className="early-bird-offer">Launch Offer: Sign up by August 15 to get our introductory rate! Prices increase to $2.99/month after this date.</p>
+        <p className="early-bird-offer">
+          Launch Offer: Sign up by August 15 to get our introductory rate!
+          Prices increase to $2.99/month after this date.
+        </p>
       )}
-      <button className="card-btn" onClick={handleSubscribe}>{buttonText}</button>
+      <button className="subscribe-btn" onClick={handleSubscribe}>
+        {buttonText}
+      </button>
     </div>
   );
 };
 
 export default PricingCard;
-
-
-
