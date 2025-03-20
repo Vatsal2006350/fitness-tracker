@@ -22,17 +22,7 @@ const ChatPage = ({ darkMode }) => {
   const [apiKey, setApiKey] = useState(process.env.REACT_APP_OPEN_AI_API_KEY);
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    // Log that we have the API key (without revealing the key)
-    if (apiKey) {
-      console.log("API key found in environment variables for Chat");
-    } else {
-      console.log("API key not found in environment variables for Chat");
-      // Use the same fallback key as in PersonalizedWorkout
-      setApiKey('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');
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  
 
   useEffect(() => {
     scrollToBottom();
