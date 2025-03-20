@@ -281,7 +281,7 @@ const ContactUs = ({ darkMode }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <EmailIcon sx={{ color: '#DC1414', mr: 2, fontSize: 28 }} />
                   <Typography variant="body1" sx={{ fontFamily: '"Inter", sans-serif' }}>
-                    svatsal64@gmail.com
+                    svatsal@umich.edu
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
