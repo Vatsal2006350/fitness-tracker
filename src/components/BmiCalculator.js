@@ -38,7 +38,7 @@ function BmiCalculator() {
         <Box className="bmi-container">
             <Box className="bmi-info" sx={{ color: theme.palette.text.primary }}>
                 <img src={BmiImage} alt="BMI Information" />
-                <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Arial' }}>Understanding BMI</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: '"Inter", sans-serif' }}>Understanding BMI</Typography>
                 <Typography variant="body1">
                     Body Mass Index (BMI) is a simple calculation using a person's height and weight.
                     The formula is BMI = kg/m<sup>2</sup> where kg is a person's weight in kilograms and m<sup>2</sup> is their height in meters squared.
@@ -47,7 +47,7 @@ function BmiCalculator() {
                 </Typography>
             </Box>
             <Box className="bmi-calculator" sx={{ color: theme.palette.text.primary }}>
-                <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold', fontFamily: 'Arial' }}>BMI Calculator</Typography>
+                <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold', fontFamily: '"Inter", sans-serif' }}>BMI Calculator</Typography>
                 <div className="input-container">
                     <label htmlFor="height">Enter Your Height (cm):</label>
                     <input

@@ -1,8 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, TextField, Button, Stack, Paper, Container, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Stack, Paper, Container, Grid, Alert } from '@mui/material';
 import emailjs from 'emailjs-com'; 
 import '../assets/css/ContactUs.css';
 import '../App.css'
+import SendIcon from '@mui/icons-material/Send';
+import EmailIcon from '@mui/icons-material/Email';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PhoneIcon from '@mui/icons-material/Phone';
 
 const ContactUs = ({ darkMode }) => {
   const formInitialDetails = {
@@ -55,56 +59,58 @@ const ContactUs = ({ darkMode }) => {
   };
 
   return (
-    <Box className="outerWrapper">
-      <Container className="wrapper">
-        <Grid container spacing={4}>
+    <Box sx={{ 
+      padding: 4, 
+      backgroundColor: darkMode ? 'rgba(18, 18, 18, 0.8)' : 'rgba(248, 249, 250, 0.8)',
+      minHeight: 'calc(100vh - 200px)'
+    }}>
+      <Container maxWidth="lg">
+        <Typography 
+          variant="h2" 
+          align="center" 
+          mb={6}
+          sx={{ 
+            fontWeight: 700, 
+            fontFamily: '"Inter", sans-serif',
+            color: '#DC1414',
+            fontSize: { xs: '2rem', md: '3rem' },
+            position: 'relative',
+            display: 'inline-block',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            width: '100%',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              bottom: '-12px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              height: '4px',
+              width: '80px',
+              backgroundColor: '#DC1414',
+              borderRadius: '2px'
+            }
+          }}
+        >
+          Contact Us
+        </Typography>
+
+        <Grid container spacing={6} alignItems="center">
           <Grid item xs={12} md={6}>
-            <Paper className="contacts" elevation={3}>
-              <Typography 
-                sx={{ 
-                  fontSize: { lg: '44px', xs: '40px' }, 
-                  fontWeight: 'bold', 
-                  fontFamily: 'Arial', 
-                  color: darkMode ? 'white' : 'black' 
-                }} 
-                align="center"
-              >
-                LET'S CONNECT
-              </Typography>
-              <Typography 
-                variant="body1" 
-                className="description" 
-                align="center"
-                sx={{ color: darkMode ? 'white' : 'black' }}
-              >
-                Feel free to connect with me for collaborations focused on promoting health awareness, providing personalized tips, and sharing my experiences. I'm always open to engage with you on these topics! 
-              </Typography>
-              <Box className="info">
-                <br></br>
-                <Typography fontWeight='bold' variant="body1" align="center" sx={{ color: darkMode ? 'white' : 'black' }}>
-                  Email: svatsal@umich.edu
-                </Typography>
-                <Typography fontWeight='bold' variant="body1" align="center" sx={{ color: darkMode ? 'white' : 'black' }}>
-                  Phone: (+971) 50-806-2831
-                </Typography>
-              </Box>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6} >
-            <Paper className="form" elevation={3}>
-              <Typography 
-                variant="h3" 
-                align="center" 
-                fontWeight={700} 
-                gutterBottom 
-                sx={{ 
-                  fontWeight: 'bold', 
-                  fontFamily: 'Arial', 
-                  color: darkMode ? 'white' : 'black'
-                }}
-              >
-                CONTACT US
-              </Typography>
+            <Paper 
+              elevation={6} 
+              sx={{ 
+                p: 4, 
+                borderRadius: '16px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.15)'
+                },
+                backgroundColor: darkMode ? 'rgba(30,30,30,0.9)' : 'white'
+              }}
+            >
               <form ref={form} onSubmit={handleSubmit}>
                 <Stack spacing={3}>
                   <TextField
@@ -115,7 +121,22 @@ const ContactUs = ({ darkMode }) => {
                     name="from_name"
                     value={formDetails.from_name}
                     onChange={(e) => onFormUpdate('from_name', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
+                    InputProps={{ 
+                      style: { 
+                        fontFamily: '"Inter", sans-serif', 
+                        color: darkMode ? 'white' : 'black' 
+                      } 
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                      },
+                    }}
                   />
                   <TextField
                     label="Email"
@@ -125,7 +146,22 @@ const ContactUs = ({ darkMode }) => {
                     name="from_email"
                     value={formDetails.from_email}
                     onChange={(e) => onFormUpdate('from_email', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
+                    InputProps={{ 
+                      style: { 
+                        fontFamily: '"Inter", sans-serif', 
+                        color: darkMode ? 'white' : 'black' 
+                      } 
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                      },
+                    }}
                   />
                   <TextField
                     label="Subject"
@@ -135,35 +171,133 @@ const ContactUs = ({ darkMode }) => {
                     name="subject"
                     value={formDetails.subject}
                     onChange={(e) => onFormUpdate('subject', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
+                    InputProps={{ 
+                      style: { 
+                        fontFamily: '"Inter", sans-serif', 
+                        color: darkMode ? 'white' : 'black' 
+                      } 
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                      },
+                    }}
                   />
                   <TextField
                     label="Message"
                     variant="outlined"
-                    multiline
-                    rows={4}
                     fullWidth
                     required
+                    multiline
+                    rows={4}
                     name="message"
                     value={formDetails.message}
                     onChange={(e) => onFormUpdate('message', e.target.value)}
-                    InputProps={{ style: { fontFamily: 'Arial', color: darkMode ? 'white' : 'black' } }}
+                    InputProps={{ 
+                      style: { 
+                        fontFamily: '"Inter", sans-serif', 
+                        color: darkMode ? 'white' : 'black' 
+                      } 
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#DC1414',
+                        },
+                      },
+                    }}
                   />
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    className="control"
+                  <Button 
+                    type="submit" 
+                    variant="contained" 
+                    size="large"
+                    endIcon={<SendIcon />}
+                    disabled={buttonText !== "Send"}
+                    sx={{
+                      backgroundColor: '#DC1414',
+                      color: 'white',
+                      fontWeight: 600,
+                      padding: '12px 24px',
+                      borderRadius: '30px',
+                      '&:hover': {
+                        backgroundColor: '#B40000',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 12px rgba(220, 20, 20, 0.3)'
+                      },
+                      transition: 'all 0.2s ease'
+                    }}
                   >
-                    <span>{buttonText}</span>
+                    {buttonText}
                   </Button>
+                  {status.message && (
+                    <Alert 
+                      severity={status.success ? "success" : "error"}
+                      sx={{ mt: 2, fontFamily: '"Inter", sans-serif' }}
+                    >
+                      {status.message}
+                    </Alert>
+                  )}
                 </Stack>
               </form>
-              {status.message && 
-                <Typography className={status.success ? 'success' : 'danger'}>
-                  {status.message}
-                </Typography>
-              }
             </Paper>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ pl: { xs: 0, md: 4 } }}>
+              <Typography 
+                variant="h4" 
+                gutterBottom 
+                sx={{ 
+                  fontWeight: 600, 
+                  fontFamily: '"Inter", sans-serif',
+                  color: darkMode ? 'white' : '#333',
+                  mb: 3
+                }}
+              >
+                Get In Touch
+              </Typography>
+              <Typography 
+                variant="body1" 
+                paragraph
+                sx={{ 
+                  fontSize: '1.1rem',
+                  mb: 4,
+                  color: darkMode ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.7)',
+                  fontFamily: '"Inter", sans-serif',
+                }}
+              >
+                Have questions about our fitness programs or need personalized advice? 
+                Our team of expert trainers and nutritionists are here to help you 
+                achieve your fitness goals.
+              </Typography>
+              <Stack spacing={3}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <EmailIcon sx={{ color: '#DC1414', mr: 2, fontSize: 28 }} />
+                  <Typography variant="body1" sx={{ fontFamily: '"Inter", sans-serif' }}>
+                    svatsal64@gmail.com
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <LocationOnIcon sx={{ color: '#DC1414', mr: 2, fontSize: 28 }} />
+                  <Typography variant="body1" sx={{ fontFamily: '"Inter", sans-serif' }}>
+                    Ann Arbor, Michigan
+                  </Typography>
+                </Box>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <PhoneIcon sx={{ color: '#DC1414', mr: 2, fontSize: 28 }} />
+                  <Typography variant="body1" sx={{ fontFamily: '"Inter", sans-serif' }}>
+                    +1 (555) 123-4567
+                  </Typography>
+                </Box> */}
+              </Stack>
+            </Box>
           </Grid>
         </Grid>
       </Container>

@@ -1,4 +1,6 @@
 import React from "react";
+import { Box, Typography, Button, Paper, List, ListItem, ListItemIcon, ListItemText, Chip, Divider } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import "../assets/css/PricingCard.css";
 
 const PricingCard = ({
@@ -10,7 +12,8 @@ const PricingCard = ({
   users,
   sendUp,
   isMonthly,
-  handleGetStarted
+  handleGetStarted,
+  isLoggedIn
 }) => {
   const monthlyPriceNumber = parseFloat(monthlyPrice.slice(1));
   const annualPriceNumber = parseFloat(annualPrice.slice(1));
@@ -33,33 +36,116 @@ const PricingCard = ({
   };
 
   const buttonText = title === "Basic Plan" ? "Get Started for Free" : "Subscribe Now";
+  const features = [storage, users, sendUp];
 
   return (
-    <div className={`pricing-card ${title === "Premium Plan" ? "premium-card" : ""}`}>
-      <header className="card-header">
-        <h2 className="card-title">{title}</h2>
-        <div className="price-container">
-          <h1 className="card-price">{price}<span className="price-period">/{isMonthly ? 'month' : 'year'}</span></h1>
-          {title === "Premium Plan" && !isMonthly && (
-            <p className="savings-text">Save {discountPercentage}% with yearly plan</p>
-          )}
-        </div>
-      </header>
-      <div className="card-features">
-        <p className="feature">{storage}</p>
-        <p className="feature">{users}</p>
-        <p className="feature">{sendUp}</p>
-      </div>
-      {title === "Premium Plan" && isMonthly && (
-        <p className="early-bird-offer">
-          Launch Offer: Sign up by August 15 to get our introductory rate!
-          Prices increase to $2.99/month after this date.
-        </p>
-      )}
-      <button className="subscribe-btn" onClick={handleSubscribe}>
-        {buttonText}
-      </button>
-    </div>
+    <Paper 
+      elevation={4} 
+      sx={{ 
+        maxWidth: 380,
+        width: '100%',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        border: title === "Premium Plan" ? '2px solid #DC1414' : 'none',
+        '&:hover': {
+          transform: 'translateY(-8px)',
+          boxShadow: '0 12px 28px rgba(0, 0, 0, 0.15)'
+        }
+      }}
+    >
+      <Box sx={{ 
+        bgcolor: title === "Premium Plan" ? '#DC1414' : 'transparent',
+        color: title === "Premium Plan" ? 'white' : 'inherit',
+        py: 4,
+        px: 4,
+        textAlign: 'center'
+      }}>
+        <Typography variant="h5" fontWeight={700} gutterBottom>
+          {title}
+        </Typography>
+        <Typography variant="h3" fontWeight={800} sx={{ mt: 3 }}>
+          {price}
+          <Typography component="span" variant="subtitle1" sx={{ ml: 1 }}>
+            /{isMonthly ? 'month' : 'year'}
+          </Typography>
+        </Typography>
+        {title === "Premium Plan" && !isMonthly && (
+          <Chip 
+            label={`Save ${discountPercentage}%`} 
+            color="secondary" 
+            size="small"
+            sx={{ 
+              mt: 2,
+              bgcolor: 'white', 
+              color: '#DC1414', 
+              fontWeight: 600,
+              '& .MuiChip-label': { px: 1 }
+            }}
+          />
+        )}
+      </Box>
+      
+      <Divider />
+      
+      <Box sx={{ px: 3, py: 4 }}>
+        <List sx={{ mb: 3 }}>
+          {features.map((feature, index) => (
+            <ListItem key={index} sx={{ py: 1.5 }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <CheckCircleIcon sx={{ color: '#DC1414' }} />
+              </ListItemIcon>
+              <ListItemText 
+                primary={feature} 
+                primaryTypographyProps={{ 
+                  fontSize: '0.95rem', 
+                  lineHeight: 1.5 
+                }} 
+              />
+            </ListItem>
+          ))}
+        </List>
+        
+        {title === "Premium Plan" && isMonthly && (
+          <Box sx={{ 
+            bgcolor: 'rgba(220, 20, 20, 0.08)', 
+            borderRadius: 2, 
+            p: 2.5,
+            mb: 4,
+            textAlign: 'center'
+          }}>
+            <Typography variant="body2" color="#DC1414" fontWeight={500}>
+              Launch Offer: Sign up by August 15 to get our introductory rate!
+              Prices increase to $2.99/month after this date.
+            </Typography>
+          </Box>
+        )}
+        
+        <Button 
+          variant="contained" 
+          fullWidth 
+          onClick={handleSubscribe}
+          sx={{
+            bgcolor: title === "Premium Plan" ? '#DC1414' : 'white',
+            color: title === "Premium Plan" ? 'white' : '#DC1414',
+            border: '2px solid #DC1414',
+            borderRadius: '30px',
+            py: 1.8,
+            fontWeight: 600,
+            fontSize: '1rem',
+            '&:hover': {
+              bgcolor: title === "Premium Plan" ? 'white' : '#DC1414',
+              color: title === "Premium Plan" ? '#DC1414' : 'white',
+              boxShadow: '0 4px 12px rgba(220, 20, 20, 0.2)',
+              transform: 'translateY(-2px)'
+            },
+            transition: 'all 0.2s ease'
+          }}
+        >
+          {buttonText}
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 
