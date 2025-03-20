@@ -1,5 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Box, Typography, Paper, TextField, Button, CircularProgress, Grid, Card, CardContent, CardMedia, Avatar } from '@mui/material';
+import { 
+  Box, Typography, Paper, TextField, Button, CircularProgress, Grid, 
+  Card, CardContent, CardMedia, Avatar
+} from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
@@ -9,7 +12,6 @@ import axios from 'axios';
 import '../assets/css/ChatPage.css';
 import PageTitle from './PageTitle';
 
-// Sample images for suggestion cards
 const dietImage = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80';
 const exerciseImage = 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80';
 const runningImage = 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80';
@@ -19,10 +21,11 @@ const ChatPage = ({ darkMode }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showCards, setShowCards] = useState(true);
-  const [apiKey, setApiKey] = useState(process.env.REACT_APP_OPEN_AI_API_KEY);
-  const messagesEndRef = useRef(null);
 
-  
+  // Pull OpenAI key from .env
+  const [apiKey] = useState(process.env.REACT_APP_OPEN_AI_API_KEY);
+
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     scrollToBottom();
@@ -32,13 +35,12 @@ const ChatPage = ({ darkMode }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Simple formatting for all message types - plain text with minimal formatting
   const formatMessage = (text) => {
-    // Basic formatting - just handle line breaks and simple formatting
+    // Basic formatting - just handle line breaks and bullet points
     let formattedText = text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/•\s/g, '• ');
-    
+
     return (
       <Box sx={{ 
         whiteSpace: 'pre-wrap',
@@ -53,65 +55,79 @@ const ChatPage = ({ darkMode }) => {
     );
   };
 
-  const handleSendMessage = useCallback(async (promptMessage = message) => {
-    if (!promptMessage.trim()) return;
+  const handleSendMessage = useCallback(
+    async (promptMessage = message) => {
+      if (!promptMessage.trim()) return;
 
-    const newMessage = { text: promptMessage, sender: 'user' };
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-    setMessage('');
-    setIsLoading(true);
-    setShowCards(false);
+      // Add user's message to chat
+      const newMessage = { text: promptMessage, sender: 'user' };
+      setMessages((prev) => [...prev, newMessage]);
+      setMessage('');
+      setIsLoading(true);
+      setShowCards(false);
 
-    try {
-      const prompt = `You are a fitness AI bot with over 50 years of training and coaching experience in the health and fitness industry. 
-      Provide a comprehensive and detailed response to the following user query: "${promptMessage}"
-      
-      Format your response in a clean, readable way:
-      - Use simple formatting with line breaks and bullet points
-      - For lists, use bullet points (•)
-      - Use asterisks to indicate emphasis (*important point*)
-      - Keep the response straightforward and easy to read`;
+      try {
+        const prompt = `
+          You are a fitness AI bot with over 50 years of training and coaching experience in the health and fitness industry. 
+          Provide a comprehensive and detailed response to the following user query: "${promptMessage}"
+          
+          Format your response in a clean, readable way:
+          - Use simple formatting with line breaks and bullet points
+          - For lists, use bullet points (•)
+          - Use asterisks to indicate emphasis (*important point*)
+          - Keep the response straightforward and easy to read
+        `;
 
-      console.log("Sending request to OpenAI API for chat...");
-      
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'You are a highly experienced fitness coach providing detailed and comprehensive fitness advice.' },
-            { role: 'user', content: prompt }
-          ],
-          max_tokens: 2000,
-          n: 1,
-          stop: null,
-          temperature: 0.7,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
+        console.log("Sending request to OpenAI API...");
+
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: 'gpt-4', // or 'gpt-3.5-turbo' if desired
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a highly experienced fitness coach providing detailed and comprehensive fitness advice.'
+              },
+              { role: 'user', content: prompt }
+            ],
+            max_tokens: 2000,
+            n: 1,
+            stop: null,
+            temperature: 0.7,
           },
-        }
-      );
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+            },
+          }
+        );
 
-      console.log("Chat response received from OpenAI API");
-      const botMessage = { text: response.data.choices[0].message.content.trim(), sender: 'bot' };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    } catch (error) {
-      console.error('Error in chat request:', error);
-      const errorMessage = { text: 'Sorry, something went wrong. Please try again later.', sender: 'bot' };
-      setMessages(prevMessages => [...prevMessages, errorMessage]);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-    }
-  }, [message, apiKey]);
+        const botReply = response.data.choices[0]?.message.content?.trim() || '';
+        console.log("OpenAI API responded successfully:", botReply);
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
+        const botMessage = { text: botReply, sender: 'bot' };
+        setMessages((prev) => [...prev, botMessage]);
+      } catch (error) {
+        console.error('Error in OpenAI API request:', error);
+        const errorMessage = {
+          text: 'Sorry, something went wrong. Please try again later.',
+          sender: 'bot'
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      }
+    },
+    [message, apiKey]
+  );
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage();
     }
   };
@@ -127,7 +143,6 @@ const ChatPage = ({ darkMode }) => {
     }
   }, [messages]);
 
-  // Suggestion cards data
   const suggestionCards = [
     {
       title: 'Build Muscle',
@@ -150,22 +165,24 @@ const ChatPage = ({ darkMode }) => {
   ];
 
   return (
-    <Box sx={{ 
-      width: '100%', 
-      minHeight: 'calc(100vh - 100px)',
-      p: { xs: 2, md: 4 },
-      backgroundColor: darkMode ? '#121212' : '#f5f5f5',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
-    }}>
+    <Box
+      sx={{
+        width: '100%',
+        minHeight: 'calc(100vh - 100px)',
+        p: { xs: 2, md: 4 },
+        backgroundColor: darkMode ? '#121212' : '#f5f5f5',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
       <PageTitle title="Fitness Coach AI" />
-      
-      <Button 
-        variant="contained" 
+
+      <Button
+        variant="contained"
         startIcon={<LoopIcon />}
         onClick={startNewConversation}
-        sx={{ 
+        sx={{
           mb: 4,
           backgroundColor: '#DC1414',
           fontWeight: 600,
@@ -181,14 +198,14 @@ const ChatPage = ({ darkMode }) => {
       >
         Start New Conversation
       </Button>
-      
+
       <Box sx={{ width: '100%', maxWidth: '1000px', mb: 4 }}>
         {showCards && (
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {suggestionCards.map((card, index) => (
               <Grid item xs={12} md={4} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
@@ -213,10 +230,10 @@ const ChatPage = ({ darkMode }) => {
                   />
                   <CardContent sx={{ flexGrow: 1, p: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Box sx={{ color: '#DC1414', mr: 1 }}>
-                        {card.icon}
-                      </Box>
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>{card.title}</Typography>
+                      <Box sx={{ color: '#DC1414', mr: 1 }}>{card.icon}</Box>
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        {card.title}
+                      </Typography>
                     </Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                       {card.text}
@@ -227,12 +244,12 @@ const ChatPage = ({ darkMode }) => {
             ))}
           </Grid>
         )}
-        
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: { xs: 1, sm: 2 }, 
-            height: '60vh', 
+
+        <Paper
+          elevation={3}
+          sx={{
+            p: { xs: 1, sm: 2 },
+            height: '60vh',
             overflow: 'auto',
             borderRadius: '12px',
             backgroundColor: darkMode ? '#1e1e1e' : '#fff',
@@ -243,12 +260,12 @@ const ChatPage = ({ darkMode }) => {
           }}
         >
           {messages.length === 0 ? (
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
                 height: '100%',
                 opacity: 0.7,
                 padding: 3
@@ -264,23 +281,27 @@ const ChatPage = ({ darkMode }) => {
             </Box>
           ) : (
             messages.map((msg, index) => (
-              <Box 
-                key={index} 
-                sx={{ 
-                  display: 'flex', 
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
                   justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                   mb: 2,
                   mx: { xs: 1, sm: 2 },
                   mt: index === 0 ? 2 : 0
                 }}
-                className={msg.sender === 'user' ? 'user-message-animation' : 'bot-message-animation'}
+                className={
+                  msg.sender === 'user'
+                    ? 'user-message-animation'
+                    : 'bot-message-animation'
+                }
               >
                 {msg.sender === 'bot' && (
-                  <Avatar 
-                    sx={{ 
-                      bgcolor: '#DC1414', 
-                      width: 40, 
-                      height: 40, 
+                  <Avatar
+                    sx={{
+                      bgcolor: '#DC1414',
+                      width: 40,
+                      height: 40,
                       mr: 1,
                       display: { xs: 'none', sm: 'flex' },
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -289,58 +310,70 @@ const ChatPage = ({ darkMode }) => {
                     <FitnessCenterIcon />
                   </Avatar>
                 )}
-                
-                <Box 
-                  sx={{ 
+
+                <Box
+                  sx={{
                     maxWidth: { xs: '85%', md: '80%' },
                     p: { xs: 1.5, sm: 2 },
-                    borderRadius: msg.sender === 'user' 
-                      ? '18px 18px 4px 18px' 
-                      : '18px 18px 18px 4px',
-                    backgroundColor: msg.sender === 'user' 
-                      ? 'rgba(220, 20, 20, 0.9)' 
-                      : darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(248, 248, 248, 0.9)',
-                    color: msg.sender === 'user' ? '#fff' : darkMode ? '#e0e0e0' : 'inherit',
+                    borderRadius:
+                      msg.sender === 'user'
+                        ? '18px 18px 4px 18px'
+                        : '18px 18px 18px 4px',
+                    backgroundColor:
+                      msg.sender === 'user'
+                        ? 'rgba(220, 20, 20, 0.9)'
+                        : darkMode
+                        ? 'rgba(255, 255, 255, 0.05)'
+                        : 'rgba(248, 248, 248, 0.9)',
+                    color:
+                      msg.sender === 'user'
+                        ? '#fff'
+                        : darkMode
+                        ? '#e0e0e0'
+                        : 'inherit',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                    border: msg.sender === 'user' 
-                      ? 'none' 
-                      : '1px solid rgba(220, 20, 20, 0.1)',
+                    border:
+                      msg.sender === 'user'
+                        ? 'none'
+                        : '1px solid rgba(220, 20, 20, 0.1)'
                   }}
                 >
                   {formatMessage(msg.text)}
                 </Box>
-                
+
                 {msg.sender === 'user' && (
-                  <Avatar 
-                    sx={{ 
-                      bgcolor: '#3A1212', 
-                      width: 40, 
-                      height: 40, 
+                  <Avatar
+                    sx={{
+                      bgcolor: '#3A1212',
+                      width: 40,
+                      height: 40,
                       ml: 1,
                       display: { xs: 'none', sm: 'flex' },
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}
                   >
-                    {/* User's first initial */}
                     <Typography>U</Typography>
                   </Avatar>
                 )}
               </Box>
             ))
           )}
+
           {isLoading && (
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
                 p: 2,
                 mx: { xs: 1, sm: 2 },
                 borderRadius: '18px 18px 18px 4px',
-                backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(248, 248, 248, 0.9)',
+                backgroundColor: darkMode
+                  ? 'rgba(255, 255, 255, 0.05)'
+                  : 'rgba(248, 248, 248, 0.9)',
                 alignSelf: 'flex-start',
                 maxWidth: { xs: '85%', md: '80%' },
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                border: '1px solid rgba(220, 20, 20, 0.1)',
+                border: '1px solid rgba(220, 20, 20, 0.1)'
               }}
               className="processing-animation"
             >
@@ -350,14 +383,14 @@ const ChatPage = ({ darkMode }) => {
           )}
           <div ref={messagesEndRef} />
         </Paper>
-        
-        <Box 
-          component="form" 
-          sx={{ 
-            mt: 2, 
-            display: 'flex', 
+
+        <Box
+          component="form"
+          sx={{
+            mt: 2,
+            display: 'flex',
             alignItems: 'center',
-            gap: 1,
+            gap: 1
           }}
           onSubmit={(e) => {
             e.preventDefault();
@@ -373,7 +406,7 @@ const ChatPage = ({ darkMode }) => {
             onKeyDown={handleKeyPress}
             multiline
             maxRows={3}
-            sx={{ 
+            sx={{
               backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : '#fff',
               borderRadius: '30px',
               '& .MuiOutlinedInput-root': {
@@ -381,27 +414,27 @@ const ChatPage = ({ darkMode }) => {
                 padding: '10px 16px',
                 '& fieldset': {
                   borderColor: 'rgba(220, 20, 20, 0.3)',
-                  borderRadius: '30px',
+                  borderRadius: '30px'
                 },
                 '&:hover fieldset': {
-                  borderColor: 'rgba(220, 20, 20, 0.5)',
+                  borderColor: 'rgba(220, 20, 20, 0.5)'
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#DC1414',
-                },
+                  borderColor: '#DC1414'
+                }
               },
               '& .MuiInputBase-input': {
-                fontSize: '15px',
+                fontSize: '15px'
               },
               boxShadow: '0 2px 12px rgba(0, 0, 0, 0.04)'
             }}
           />
-          <Button 
+          <Button
             variant="contained"
             endIcon={<SendIcon />}
             onClick={handleSendMessage}
             disabled={isLoading || !message.trim()}
-            sx={{ 
+            sx={{
               height: 54,
               minWidth: '100px',
               borderRadius: '30px',
@@ -413,7 +446,7 @@ const ChatPage = ({ darkMode }) => {
                 boxShadow: '0 4px 8px rgba(220, 20, 20, 0.3)'
               },
               '&.Mui-disabled': {
-                backgroundColor: 'rgba(220, 20, 20, 0.3)',
+                backgroundColor: 'rgba(220, 20, 20, 0.3)'
               },
               transition: 'all 0.2s ease'
             }}
